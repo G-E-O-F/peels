@@ -26,4 +26,14 @@
  * University: <http://kiwi.atmos.colostate.edu/BUGS/geodesic/>
  */
 
-module.exports = require('./lib/sphere');
+var Sphere = require('./lib/sphere');
+
+var main = function(){
+    return new Sphere();
+};
+
+if (require.main === module) {
+    main();
+}else{
+    module.exports = Sphere;
+}
