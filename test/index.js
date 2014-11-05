@@ -48,6 +48,9 @@ describe('Sphere', function(){
         it('should populate fields in sections the right way.', function(){
             var thingsAreGood = true;
             z._Sections[0].each(function(val, x, y){
+                if(val == null){
+                    thingsAreGood = false;
+                }
                 if(x === 0){
                     if(y === 0){
                         if(val !== z._North){
