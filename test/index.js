@@ -35,14 +35,42 @@ describe('Sphere', function(){
         divisions: 1
     });
 
-    debugger;
+    var z = new Sphere({
+        divisions: 8
+    });
 
     describe('constructor', function(){
 
         it('should have 5 sections.', function(){
-
             return s._Sections.length.should.equal(5);
+        });
 
+        it('should populate fields in sections the right way.', function(){
+            var thingsAreGood = true;
+            z._Sections[0].each(function(val, x, y){
+                if(x === 0){
+                    if(y === 0){
+                        if(val !== z._North){
+                            thingsAreGood = false;
+                        }
+                    }else{
+                        if(val._Section._index !== 4){
+                            thingsAreGood = false;
+                        }
+                    }
+                }else
+                if(y+1 === z._divisions){
+                    if(x+1 === z._divisions * 2){
+                        if(val !== z._South){
+                            thingsAreGood = false;
+                        }
+                    }else
+                    if(val._Section._index !== 4){
+                        thingsAreGood = false;
+                    }
+                }
+            });
+            return thingsAreGood;
         });
 
         // TODO: write more tests.
