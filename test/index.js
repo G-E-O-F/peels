@@ -22,10 +22,13 @@
 
 var assert = require('assert'),
     chai = require('chai'),
+    chaiAsPromised = require("chai-as-promised"),
+    q = require('q'),
     expect = chai.expect,
     _ = require('lodash');
 
 chai.should();
+chai.use(chaiAsPromised);
 
 describe('Sphere', function(){
 
@@ -46,34 +49,50 @@ describe('Sphere', function(){
         });
 
         it('should populate fields in sections the right way.', function(){
-            var thingsAreGood = true;
+
+            var xi = [], yi = [], id = q.defer();
+
             z._Sections[0].each(function(val, x, y){
+
+                xi[x] = true;
+                yi[y] = true;
+
                 if(val == null){
-                    thingsAreGood = false;
+                    id.reject("Unlinked field.");
                 }
                 if(x === 0){
                     if(y === 0){
                         if(val !== z._North){
-                            thingsAreGood = false;
+                            id.reject("Couldn't find north pole.");
                         }
                     }else{
                         if(val._Section._index !== 4){
-                            thingsAreGood = false;
+                            id.reject('Wrong section index.');
                         }
                     }
                 }else
                 if(y+1 === z._divisions){
                     if(x+1 === z._divisions * 2){
                         if(val !== z._South){
-                            thingsAreGood = false;
+                            id.reject("Couldn't find south pole.");
                         }
                     }else
                     if(val._Section._index !== 4){
-                        thingsAreGood = false;
+                        id.reject('Wrong section index.');
                     }
                 }
+            }, function(){
+
+                if((xi.length === (z._divisions * 2)) && (yi.length === z._divisions)){
+                    id.resolve();
+                }else{
+                    id.reject('Wrong range of values in sections.');
+                }
+
             });
-            return thingsAreGood;
+
+            return id.promise.should.eventually.be.fulfilled;
+
         });
 
         // TODO: write more tests.
