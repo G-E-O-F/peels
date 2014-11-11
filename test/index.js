@@ -39,7 +39,7 @@ describe('Sphere', function () {
 	});
 
 	var z = new Sphere({
-		divisions: 8
+		divisions: 3
 	});
 
 	describe('constructor', function () {
@@ -48,48 +48,83 @@ describe('Sphere', function () {
 			return s._Sections.length.should.equal(5);
 		});
 
-		it('should populate fields in sections the right way.', function () {
+		describe('edge linking', function(){
 
-			var xi = [], yi = [], id = q.defer();
-
-			z._Sections[0].each(function (val, x, y) {
-
-				xi[x] = true;
-				yi[y] = true;
-
-				if (val == null) {
-					id.reject("Unlinked field.");
-				}
-				if (x === 0) {
-					if (y === 0) {
-						if (val !== z._North) {
-							id.reject("Couldn't find north pole.");
-						}
-					} else {
-						if (val._Section._index !== 4) {
-							id.reject('Wrong section index.');
-						}
-					}
-				} else if (y + 1 === z._divisions) {
-					if (x + 1 === z._divisions * 2) {
-						if (val !== z._South) {
-							id.reject("Couldn't find south pole.");
-						}
-					} else if (val._Section._index !== 4) {
-						id.reject('Wrong section index.');
-					}
-				}
-			}, function () {
-
-				if ((xi.length === (z._divisions * 2)) && (yi.length === z._divisions)) {
-					id.resolve();
-				} else {
-					id.reject('Wrong range of values in sections.');
-				}
-
+			it('should populate the north pole.', function(){
+				return z._Sections[0].get(0,0).should.equal(z._North) &&
+					z._Sections[1].get(0,0).should.equal(z._North) &&
+					z._Sections[2].get(0,0).should.equal(z._North) &&
+					z._Sections[3].get(0,0).should.equal(z._North) &&
+					z._Sections[4].get(0,0).should.equal(z._North);
 			});
 
-			return id.promise.should.eventually.be.fulfilled;
+			it('should populate the south pole.', function(){
+				var dy = z._divisions,
+					dx = dy * 2;
+				return z._Sections[0].get(dx,dy).should.equal(z._South) &&
+					z._Sections[1].get(dx,dy).should.equal(z._South) &&
+					z._Sections[2].get(dx,dy).should.equal(z._South) &&
+					z._Sections[3].get(dx,dy).should.equal(z._South) &&
+					z._Sections[4].get(dx,dy).should.equal(z._South);
+			});
+
+			it('should connect the northwestern edge.', function(){
+				return z._Sections[0].get(0,0).should.not.be.null &&
+					z._Sections[0].get(0,1).should.not.be.null &&
+					z._Sections[0].get(0,2).should.not.be.null &&
+					z._Sections[0].get(0,3).should.not.be.null;
+			});
+
+			it('should connect the southwestern edges.', function(){
+				var dy = z._divisions;
+				return z._Sections[0].get(0,dy).should.not.be.null &&
+					z._Sections[0].get(1,dy).should.not.be.null &&
+					z._Sections[0].get(2,dy).should.not.be.null &&
+					z._Sections[0].get(3,dy).should.not.be.null &&
+					z._Sections[0].get(4,dy).should.not.be.null &&
+					z._Sections[0].get(5,dy).should.not.be.null &&
+					z._Sections[0].get(6,dy).should.not.be.null;
+			});
+
+		});
+
+		describe('adjacent field linking', function(){
+
+			it('should connect the north pole’s adjacent fields.', function(){
+				return z._North._adjacentFields[0].should.equal(z._Sections[0].get(1,0)) &&
+					z._North._adjacentFields[1].should.equal(z._Sections[1].get(1,0)) &&
+					z._North._adjacentFields[2].should.equal(z._Sections[2].get(1,0)) &&
+					z._North._adjacentFields[3].should.equal(z._Sections[3].get(1,0)) &&
+					z._North._adjacentFields[4].should.equal(z._Sections[4].get(1,0));
+			});
+
+			it('should connect the south pole’s adjacent fields.', function(){
+				var dy = z._divisions,
+					dx = dy * 2;
+				return z._South._adjacentFields[0].should.equal(z._Sections[0].get(dx, dy - 1)) &&
+					z._South._adjacentFields[1].should.equal(z._Sections[1].get(dx, dy - 1)) &&
+					z._South._adjacentFields[2].should.equal(z._Sections[2].get(dx, dy - 1)) &&
+					z._South._adjacentFields[3].should.equal(z._Sections[3].get(dx, dy - 1)) &&
+					z._South._adjacentFields[4].should.equal(z._Sections[4].get(dx, dy - 1));
+			});
+
+			it('should connect one of the northern tropical pentagon’s adjacent fields.', function(){
+				var northTropPent = s._Sections[0].get(1,0);
+				return northTropPent._adjacentFields[0].should.equal(s._North) &&
+					northTropPent._adjacentFields[1].should.equal(s._Sections[4].get(1,0)) &&
+					northTropPent._adjacentFields[2].should.equal(s._Sections[4].get(2,0)) &&
+					northTropPent._adjacentFields[3].should.equal(s._Sections[0].get(2,0)) &&
+					northTropPent._adjacentFields[4].should.equal(s._Sections[1].get(1,0));
+			});
+
+			it('should connect one of the southern tropical pentagon’s adjacent fields.', function(){
+				var southTropPent = s._Sections[0].get(2,0);
+				return southTropPent._adjacentFields[0].should.equal(s._Sections[0].get(1,0)) &&
+					southTropPent._adjacentFields[1].should.equal(s._Sections[4].get(2,0)) &&
+					southTropPent._adjacentFields[2].should.equal(s._South) &&
+					southTropPent._adjacentFields[3].should.equal(s._Sections[1].get(2,0)) &&
+					southTropPent._adjacentFields[4].should.equal(s._Sections[1].get(1,0));
+			});
 
 		});
 
