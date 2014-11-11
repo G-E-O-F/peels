@@ -21,82 +21,80 @@
  */
 
 var assert = require('assert'),
-    chai = require('chai'),
-    chaiAsPromised = require("chai-as-promised"),
-    q = require('q'),
-    expect = chai.expect,
-    _ = require('lodash');
+	 chai = require('chai'),
+	 chaiAsPromised = require("chai-as-promised"),
+	 q = require('q'),
+	 expect = chai.expect,
+	 _ = require('lodash');
 
 chai.should();
 chai.use(chaiAsPromised);
 
-describe('Sphere', function(){
+describe('Sphere', function () {
 
-    var Sphere = require('../lib/sphere');
+	var Sphere = require('../lib/sphere');
 
-    var s = new Sphere({
-        divisions: 1
-    });
+	var s = new Sphere({
+		divisions: 1
+	});
 
-    var z = new Sphere({
-        divisions: 8
-    });
+	var z = new Sphere({
+		divisions: 8
+	});
 
-    describe('constructor', function(){
+	describe('constructor', function () {
 
-        it('should have 5 sections.', function(){
-            return s._Sections.length.should.equal(5);
-        });
+		it('should have 5 sections.', function () {
+			return s._Sections.length.should.equal(5);
+		});
 
-        it('should populate fields in sections the right way.', function(){
+		it('should populate fields in sections the right way.', function () {
 
-            var xi = [], yi = [], id = q.defer();
+			var xi = [], yi = [], id = q.defer();
 
-            z._Sections[0].each(function(val, x, y){
+			z._Sections[0].each(function (val, x, y) {
 
-                xi[x] = true;
-                yi[y] = true;
+				xi[x] = true;
+				yi[y] = true;
 
-                if(val == null){
-                    id.reject("Unlinked field.");
-                }
-                if(x === 0){
-                    if(y === 0){
-                        if(val !== z._North){
-                            id.reject("Couldn't find north pole.");
-                        }
-                    }else{
-                        if(val._Section._index !== 4){
-                            id.reject('Wrong section index.');
-                        }
-                    }
-                }else
-                if(y+1 === z._divisions){
-                    if(x+1 === z._divisions * 2){
-                        if(val !== z._South){
-                            id.reject("Couldn't find south pole.");
-                        }
-                    }else
-                    if(val._Section._index !== 4){
-                        id.reject('Wrong section index.');
-                    }
-                }
-            }, function(){
+				if (val == null) {
+					id.reject("Unlinked field.");
+				}
+				if (x === 0) {
+					if (y === 0) {
+						if (val !== z._North) {
+							id.reject("Couldn't find north pole.");
+						}
+					} else {
+						if (val._Section._index !== 4) {
+							id.reject('Wrong section index.');
+						}
+					}
+				} else if (y + 1 === z._divisions) {
+					if (x + 1 === z._divisions * 2) {
+						if (val !== z._South) {
+							id.reject("Couldn't find south pole.");
+						}
+					} else if (val._Section._index !== 4) {
+						id.reject('Wrong section index.');
+					}
+				}
+			}, function () {
 
-                if((xi.length === (z._divisions * 2)) && (yi.length === z._divisions)){
-                    id.resolve();
-                }else{
-                    id.reject('Wrong range of values in sections.');
-                }
+				if ((xi.length === (z._divisions * 2)) && (yi.length === z._divisions)) {
+					id.resolve();
+				} else {
+					id.reject('Wrong range of values in sections.');
+				}
 
-            });
+			});
 
-            return id.promise.should.eventually.be.fulfilled;
+			return id.promise.should.eventually.be.fulfilled;
 
-        });
+		});
 
-        // TODO: write more tests.
+		// TODO: write more tests.
 
-    });
+	});
 
 });

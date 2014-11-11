@@ -28,12 +28,12 @@
 
 var Sphere = require('./lib/sphere');
 
-var main = function(){
-    return new Sphere();
+var main = function () {
+	return new Sphere();
 };
 
 if (require.main === module) {
-    main();
-}else{
-    module.exports = Sphere;
+	main();
+} else {
+	module.exports = Sphere;
 }
