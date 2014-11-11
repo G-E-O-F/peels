@@ -21,9 +21,9 @@
  */
 
 /*
- * Based upon the technique described by Todd D. Ringler, Ross P. Heikes, and
+ * Based on the technique described by Todd D. Ringler, Ross P. Heikes, and
  * David A. Randall at the Department of Atmospheric Science at Colorado State
- * University: <http://kiwi.atmos.colostate.edu/BUGS/geodesic/>
+ * University: <http://kiwi.atmos.colostate.edu/BUGS/geodesic/>.
  */
 
 var Sphere = require('./lib/sphere');
