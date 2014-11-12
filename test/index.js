@@ -69,23 +69,21 @@ describe('Sphere', function () {
 			});
 
 			it('should connect the northwestern edge.', function(){
-				// TODO: don't just check null, check that the fields are the correct fields
-				return z._Sections[0].get(0,0).should.not.be.null &&
-					z._Sections[0].get(0,1).should.not.be.null &&
-					z._Sections[0].get(0,2).should.not.be.null &&
-					z._Sections[0].get(0,3).should.not.be.null;
+				return z._Sections[0].get(0,0).should.equal(z._North) &&
+					z._Sections[0].get(0,1).should.equal(z._Sections[4].get(1,0)) &&
+					z._Sections[0].get(0,2).should.equal(z._Sections[4].get(2,0)) &&
+					z._Sections[0].get(0,3).should.equal(z._Sections[4].get(3,0));
 			});
 
 			it('should connect the southwestern edges.', function(){
-				// TODO: don't just check null, check that the fields are the correct fields
 				var dy = z._divisions;
-				return z._Sections[0].get(0,dy).should.not.be.null &&
-					z._Sections[0].get(1,dy).should.not.be.null &&
-					z._Sections[0].get(2,dy).should.not.be.null &&
-					z._Sections[0].get(3,dy).should.not.be.null &&
-					z._Sections[0].get(4,dy).should.not.be.null &&
-					z._Sections[0].get(5,dy).should.not.be.null &&
-					z._Sections[0].get(6,dy).should.not.be.null;
+				return z._Sections[0].get(0,dy).should.equal(z._Sections[4].get(dy, 0)) &&
+					z._Sections[0].get(1,dy).should.equal(z._Sections[4].get(dy + 1, 0)) &&
+					z._Sections[0].get(2,dy).should.equal(z._Sections[4].get(dy + 2, 0)) &&
+					z._Sections[0].get(3,dy).should.equal(z._Sections[4].get(dy * 2, 0)) &&
+					z._Sections[0].get(4,dy).should.equal(z._Sections[4].get(dy * 2, 1)) &&
+					z._Sections[0].get(5,dy).should.equal(z._Sections[4].get(dy * 2, 2)) &&
+					z._Sections[0].get(6,dy).should.equal(z._South);
 			});
 
 		});
