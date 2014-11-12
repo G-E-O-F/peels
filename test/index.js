@@ -34,10 +34,12 @@ describe('Sphere', function () {
 
   var Sphere = require('../lib/sphere');
 
+  // `s` is a sphere that is essentially an icosahedron, good for testing that strange case.
   var s = new Sphere({
     divisions: 1
   });
 
+  // `z` is a sphere with two hexagons per edge and a hexagon in the middle of each triangle.
   var z = new Sphere({
     divisions: 3
   });
