@@ -39,6 +39,20 @@ describe('Sphere', function () {
     divisions: 1
   });
 
+  // `so` is the serialized version of `s`
+  var so = {
+    north: {},
+    south: {},
+    divisions: 1,
+    sections: [
+      [[{}], [{}]],
+      [[{}], [{}]],
+      [[{}], [{}]],
+      [[{}], [{}]],
+      [[{}], [{}]]
+    ]
+  };
+
   // `z` is a sphere with two hexagons per edge and a hexagon in the middle of each triangle.
   var z = new Sphere({
     divisions: 3
@@ -187,6 +201,14 @@ describe('Sphere', function () {
           innerHex._adjacentFields[5].should.equal(z._Sections[0].get(dy + 1, 0));
       });
 
+    });
+
+  });
+
+  describe('serialization', function(){
+
+    it('should match the reference serialization.', function(){
+      return s.serialize().should.satisfy(function(ss){ return _.isEqual(ss, so) });
     });
 
   });
