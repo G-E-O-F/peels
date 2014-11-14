@@ -39,20 +39,6 @@ describe('Sphere', function () {
     divisions: 1
   });
 
-  // `so` is the serialized version of `s`
-  var so = {
-    north: {},
-    south: {},
-    divisions: 1,
-    sections: [
-      [[{}], [{}]],
-      [[{}], [{}]],
-      [[{}], [{}]],
-      [[{}], [{}]],
-      [[{}], [{}]]
-    ]
-  };
-
   // `z` is a sphere with two hexagons per edge and a hexagon in the middle of each triangle.
   var z = new Sphere({
     divisions: 3
@@ -207,8 +193,103 @@ describe('Sphere', function () {
 
   describe('serialization', function(){
 
+    // `so` is the serialized version of `s`
+    var so = {
+      north: {},
+      south: {},
+      divisions: 1,
+      sections: [
+        [[{}], [{}]],
+        [[{}], [{}]],
+        [[{}], [{}]],
+        [[{}], [{}]],
+        [[{}], [{}]]
+      ]
+    };
+
     it('should match the reference serialization.', function(){
       return s.serialize().should.satisfy(function(ss){ return _.isEqual(ss, so) });
+    });
+
+    describe('validation', function(){
+
+      // `s1` is the serialized version of `s` with the wrong number of sections.
+      var s1 = {
+        north: {},
+        south: {},
+        divisions: 1,
+        sections: [
+          [[{}], [{}]],
+          [[{}], [{}]],
+          [[{}], [{}]],
+          [[{}], [{}]],
+          [[{}], [{}]],
+          [[{}], [{}]]
+        ]
+      };
+
+      // `s2` is the serialized version of `s` with a bad divisions value.
+      var s2 = {
+        north: {},
+        south: {},
+        divisions: 2,
+        sections: [
+          [[{}], [{}]],
+          [[{}], [{}]],
+          [[{}], [{}]],
+          [[{}], [{}]],
+          [[{}], [{}]]
+        ]
+      };
+
+      // `s3` is the serialized version of `s` with a missing field.
+      var s3 = {
+        north: {},
+        south: {},
+        divisions: 1,
+        sections: [
+          [[{}], [{}]],
+          [[{}], [{}]],
+          [[{}], [{}]],
+          [[{}], ['potato']],
+          [[{}], [{}]]
+        ]
+      };
+
+      // `s4` is the serialized version of `s` with an extra field.
+      var s4 = {
+        north: {},
+        south: {},
+        divisions: 1,
+        sections: [
+          [[{}], [{}]],
+          [[{}], [{}]],
+          [[{}], [{}, {}]],
+          [[{}], [{}]],
+          [[{}], [{}]]
+        ]
+      };
+
+      it('should validate well-formed serializations.', function(){
+        return s.validate(so).should.be.true;
+      });
+
+      it('should not validate badly-formed serializations.', function(){
+        return s.validate(s1).should.be.false;
+      });
+
+      it('should not validate badly-formed serializations.', function(){
+        return s.validate(s2).should.be.false;
+      });
+
+      it('should not validate badly-formed serializations.', function(){
+        return s.validate(s3).should.be.false;
+      });
+
+      it('should not validate badly-formed serializations.', function(){
+        return s.validate(s4).should.be.false;
+      });
+
     });
 
   });
