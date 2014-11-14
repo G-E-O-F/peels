@@ -292,6 +292,38 @@ describe('Sphere', function () {
 
     });
 
+    describe('de-serialization', function(){
+
+      // `haysphereData` is the serialized version of `s` with some data in it
+      var haysphereData = {
+        north: {},
+        south: {},
+        divisions: 1,
+        sections: [
+          [[{}], [{}]],
+          [[{}], [{ needle: true }]],
+          [[{}], [{}]],
+          [[{}], [{}]],
+          [[{}], [{}]]
+        ]
+      };
+
+      var haysphere = new Sphere({
+        data: haysphereData
+      });
+
+      it('should de-serialize data into Sphere instances.', function(){
+        return haysphere._Sections[1].get(2,0).data.needle.should.be.true;
+      });
+
+      it('should serialize into the exact same data as input.', function(){
+        return haysphere.serialize().should.satisfy(function(hss){
+          return _.isEqual(hss, haysphereData);
+        });
+      })
+
+    });
+
   });
 
 });
