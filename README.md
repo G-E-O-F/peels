@@ -1,7 +1,7 @@
 Peels
 =====
 
-[![Build Status](https://travis-ci.org/thure/peels.svg)](https://travis-ci.org/thure/peels)
+[![Build Status](https://travis-ci.org/G-E-O-F/peels.svg)](https://travis-ci.org/G-E-O-F/peels)
 
 A configurable spherical geodesic grid data model designed for simulations.
 
