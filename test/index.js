@@ -33,6 +33,7 @@ chai.use(chaiAsPromised);
 describe('Sphere', function () {
 
   var Sphere = require('../lib/sphere');
+  var Field = require('../lib/field');
 
   // `s` is a sphere that is essentially an icosahedron, good for testing that strange case.
   var s = new Sphere({
@@ -321,6 +322,47 @@ describe('Sphere', function () {
           return _.isEqual(hss, haysphereData);
         });
       })
+
+    });
+
+  });
+
+  describe('iteration', function(){
+
+    describe('fields’ data handling', function(){
+
+      var field = z._Sections[0].get(1,0);
+
+      it('should be able to get an adjacent field', function(){
+        return field.adjacent(0).should.be.an.instanceof(Field);
+      });
+
+      it('should be able to get all adjacent fields', function(){
+        return field.adjacents().should.be.an.instanceof(Array);
+      });
+
+      it('should be able to set data directly when Sphere isn’t iterating.', function(){
+        field.data = { apple: 'strudel' };
+        return field.data.apple.should.equal('strudel');
+      });
+
+      it('should also be able to set data directly when Sphere is on its first iteration.', function(){
+        field.data = { apple: 'cobbler' };
+        z._iteration = { current: 0 };
+        return field.data.apple.should.equal('cobbler');
+      });
+
+      it('should not be able to set previous data values when Sphere is on its next iteration.', function(){
+        field.data = { apple: 'tart' };
+        z._iteration = { previous: 0, current: 1 };
+        field.data = { apple: 'pie' };
+        return field.data.apple.should.equal('tart');
+      });
+
+      it('should point to the latest data values when the Sphere starts a new iteration.', function(){
+        z._iteration = { previous: 1, current: 2 };
+        return field.data.apple.should.equal('pie');
+      });
 
     });
 
