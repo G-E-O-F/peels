@@ -48,61 +48,15 @@ describe('Sphere', function () {
 
   describe('constructor', function () {
 
-    it('should have 5 sections.', function () {
-      return s._Sections.length.should.equal(5);
-    });
-
-    describe('edge linking', function () {
-
-      it('should link the north pole.', function () {
-        return z._Sections[0].get(0, 0).should.equal(z._North) &&
-          z._Sections[1].get(0, 0).should.equal(z._North) &&
-          z._Sections[2].get(0, 0).should.equal(z._North) &&
-          z._Sections[3].get(0, 0).should.equal(z._North) &&
-          z._Sections[4].get(0, 0).should.equal(z._North);
-      });
-
-      it('should link the south pole.', function () {
-        var dy = z._divisions,
-            dx = dy * 2;
-        return dy.should.equal(3) && dx.should.equal(6) &&
-          z._Sections[0].get(dx, dy).should.equal(z._South) &&
-          z._Sections[1].get(dx, dy).should.equal(z._South) &&
-          z._Sections[2].get(dx, dy).should.equal(z._South) &&
-          z._Sections[3].get(dx, dy).should.equal(z._South) &&
-          z._Sections[4].get(dx, dy).should.equal(z._South);
-      });
-
-      it('should connect the northwestern edge.', function () {
-        return z._Sections[0].get(0, 0).should.equal(z._North) &&
-          z._Sections[0].get(0, 1).should.equal(z._Sections[4].get(1, 0)) &&
-          z._Sections[0].get(0, 2).should.equal(z._Sections[4].get(2, 0)) &&
-          z._Sections[0].get(0, 3).should.equal(z._Sections[4].get(3, 0));
-      });
-
-      it('should connect the southwestern edges.', function () {
-        var dy = z._divisions;
-        return dy.should.equal(3) &&
-          z._Sections[0].get(0, dy).should.equal(z._Sections[4].get(dy, 0)) &&
-          z._Sections[0].get(1, dy).should.equal(z._Sections[4].get(dy + 1, 0)) &&
-          z._Sections[0].get(2, dy).should.equal(z._Sections[4].get(dy + 2, 0)) &&
-          z._Sections[0].get(3, dy).should.equal(z._Sections[4].get(dy * 2, 0)) &&
-          z._Sections[0].get(4, dy).should.equal(z._Sections[4].get(dy * 2, 1)) &&
-          z._Sections[0].get(5, dy).should.equal(z._Sections[4].get(dy * 2, 2)) &&
-          z._Sections[0].get(6, dy).should.equal(z._South);
-      });
-
-    });
-
     describe('adjacent field linking', function () {
 
       it('should connect the north pole’s adjacent fields.', function () {
         return z._North._adjacentFields.length.should.equal(5) &&
-          z._North._adjacentFields[0].should.equal(z._Sections[0].get(1, 0)) &&
-          z._North._adjacentFields[1].should.equal(z._Sections[1].get(1, 0)) &&
-          z._North._adjacentFields[2].should.equal(z._Sections[2].get(1, 0)) &&
-          z._North._adjacentFields[3].should.equal(z._Sections[3].get(1, 0)) &&
-          z._North._adjacentFields[4].should.equal(z._Sections[4].get(1, 0));
+          z._North.adjacent(0).should.equal(z._Fields[0][0][0]) &&
+          z._North.adjacent(1).should.equal(z._Fields[1][0][0]) &&
+          z._North.adjacent(2).should.equal(z._Fields[2][0][0]) &&
+          z._North.adjacent(3).should.equal(z._Fields[3][0][0]) &&
+          z._North.adjacent(4).should.equal(z._Fields[4][0][0]);
       });
 
       it('should connect the south pole’s adjacent fields.', function () {
@@ -110,83 +64,83 @@ describe('Sphere', function () {
             dx = dy * 2;
         return dy.should.equal(3) && dx.should.equal(6) &&
           z._South._adjacentFields.length.should.equal(5) &&
-          z._South._adjacentFields[0].should.equal(z._Sections[0].get(dx, dy - 1)) &&
-          z._South._adjacentFields[1].should.equal(z._Sections[1].get(dx, dy - 1)) &&
-          z._South._adjacentFields[2].should.equal(z._Sections[2].get(dx, dy - 1)) &&
-          z._South._adjacentFields[3].should.equal(z._Sections[3].get(dx, dy - 1)) &&
-          z._South._adjacentFields[4].should.equal(z._Sections[4].get(dx, dy - 1));
+          z._South.adjacent(0).should.equal(z._Fields[0][dx - 1][dy - 1]) &&
+          z._South.adjacent(1).should.equal(z._Fields[1][dx - 1][dy - 1]) &&
+          z._South.adjacent(2).should.equal(z._Fields[2][dx - 1][dy - 1]) &&
+          z._South.adjacent(3).should.equal(z._Fields[3][dx - 1][dy - 1]) &&
+          z._South.adjacent(4).should.equal(z._Fields[4][dx - 1][dy - 1]);
       });
 
       it('should connect one of the northern tropical pentagon’s adjacent fields.', function () {
-        var northTropPent = s._Sections[0].get(1, 0);
+        var northTropPent = s._Fields[0][0][0];
         return northTropPent._adjacentFields.length.should.equal(5) &&
-          northTropPent._adjacentFields[0].should.equal(s._North) &&
-          northTropPent._adjacentFields[1].should.equal(s._Sections[4].get(1, 0)) &&
-          northTropPent._adjacentFields[2].should.equal(s._Sections[4].get(2, 0)) &&
-          northTropPent._adjacentFields[3].should.equal(s._Sections[0].get(2, 0)) &&
-          northTropPent._adjacentFields[4].should.equal(s._Sections[1].get(1, 0));
+          northTropPent.adjacent(0).should.equal(s._North) &&
+          northTropPent.adjacent(1).should.equal(s._Fields[4][0][0]) &&
+          northTropPent.adjacent(2).should.equal(s._Fields[4][1][0]) &&
+          northTropPent.adjacent(3).should.equal(s._Fields[0][1][0]) &&
+          northTropPent.adjacent(4).should.equal(s._Fields[1][0][0]);
       });
 
       it('should connect one of the southern tropical pentagon’s adjacent fields.', function () {
-        var southTropPent = s._Sections[0].get(2, 0);
+        var southTropPent = s._Fields[0][1][0];
         return southTropPent._adjacentFields.length.should.equal(5) &&
-          southTropPent._adjacentFields[0].should.equal(s._Sections[0].get(1, 0)) &&
-          southTropPent._adjacentFields[1].should.equal(s._Sections[4].get(2, 0)) &&
-          southTropPent._adjacentFields[2].should.equal(s._South) &&
-          southTropPent._adjacentFields[3].should.equal(s._Sections[1].get(2, 0)) &&
-          southTropPent._adjacentFields[4].should.equal(s._Sections[1].get(1, 0));
+          southTropPent.adjacent(0).should.equal(s._Fields[0][0][0]) &&
+          southTropPent.adjacent(1).should.equal(s._Fields[4][1][0]) &&
+          southTropPent.adjacent(2).should.equal(s._South) &&
+          southTropPent.adjacent(3).should.equal(s._Fields[1][1][0]) &&
+          southTropPent.adjacent(4).should.equal(s._Fields[1][0][0]);
       });
 
       it('should connect one of the north-northeastern edge’s hexagon’s adjacent fields.', function () {
-        var nNEHex = z._Sections[0].get(1, 0);
-        return nNEHex._adjacentFields[0].should.equal(z._North) &&
+        var nNEHex = z._Fields[0][1][0];
+        return nNEHex.adjacent(0).should.equal(z._North) &&
           nNEHex._adjacentFields.length.should.equal(6) &&
-          nNEHex._adjacentFields[1].should.equal(z._Sections[4].get(1, 0)) &&
-          nNEHex._adjacentFields[2].should.equal(z._Sections[0].get(1, 1)) &&
-          nNEHex._adjacentFields[3].should.equal(z._Sections[0].get(2, 0)) &&
-          nNEHex._adjacentFields[4].should.equal(z._Sections[1].get(1, 1)) &&
-          nNEHex._adjacentFields[5].should.equal(z._Sections[1].get(1, 0));
+          nNEHex.adjacent(1).should.equal(z._Fields[4][1][0]) &&
+          nNEHex.adjacent(2).should.equal(z._Fields[0][1][1]) &&
+          nNEHex.adjacent(3).should.equal(z._Fields[0][2][0]) &&
+          nNEHex.adjacent(4).should.equal(z._Fields[1][1][1]) &&
+          nNEHex.adjacent(5).should.equal(z._Fields[1][1][0]);
       });
 
       it('should connect one of the east-northeastern edge’s hexagon’s adjacent fields.', function () {
         var dy = z._divisions,
-            eNEHex = z._Sections[0].get(dy + 1, 0);
+            eNEHex = z._Fields[0][dy + 1][0];
         return dy.should.equal(3) &&
           eNEHex._adjacentFields.length.should.equal(6) &&
-          eNEHex._adjacentFields[0].should.equal(z._Sections[0].get(dy, 0)) &&
-          eNEHex._adjacentFields[1].should.equal(z._Sections[0].get(dy, 1)) &&
-          eNEHex._adjacentFields[2].should.equal(z._Sections[0].get(dy + 1, 1)) &&
-          eNEHex._adjacentFields[3].should.equal(z._Sections[0].get(dy + 2, 0)) &&
-          eNEHex._adjacentFields[4].should.equal(z._Sections[1].get(2, dy - 1)) &&
-          eNEHex._adjacentFields[5].should.equal(z._Sections[1].get(1, dy - 1));
+          eNEHex.adjacent(0).should.equal(z._Fields[0][dy][0]) &&
+          eNEHex.adjacent(1).should.equal(z._Fields[0][dy][1]) &&
+          eNEHex.adjacent(2).should.equal(z._Fields[0][dy + 1][1]) &&
+          eNEHex.adjacent(3).should.equal(z._Fields[0][dy + 2][0]) &&
+          eNEHex.adjacent(4).should.equal(z._Fields[1][2][dy - 1]) &&
+          eNEHex.adjacent(5).should.equal(z._Fields[1][1][dy - 1]);
       });
 
       it('should connect one of the southeastern edge’s hexagon’s adjacent fields.', function () {
         var dy = z._divisions,
             dx = dy * 2,
-            sEHex = z._Sections[0].get(dx, 1);
+            sEHex = z._Fields[0][dx][1];
         return dy.should.equal(3) && dx.should.equal(6) &&
           sEHex._adjacentFields.length.should.equal(6) &&
-          sEHex._adjacentFields[0].should.equal(z._Sections[0].get(dx - 1, 1)) &&
-          sEHex._adjacentFields[1].should.equal(z._Sections[0].get(dx - 1, 2)) &&
-          sEHex._adjacentFields[2].should.equal(z._Sections[0].get(dx, 2)) &&
-          sEHex._adjacentFields[3].should.equal(z._Sections[1].get(dy + 2, dy - 1)) &&
-          sEHex._adjacentFields[4].should.equal(z._Sections[1].get(dy + 1, dy - 1)) &&
-          sEHex._adjacentFields[5].should.equal(z._Sections[0].get(dx, 0));
+          sEHex.adjacent(0).should.equal(z._Fields[0][dx - 1][1]) &&
+          sEHex.adjacent(1).should.equal(z._Fields[0][dx - 1][2]) &&
+          sEHex.adjacent(2).should.equal(z._Fields[0][dx][2]) &&
+          sEHex.adjacent(3).should.equal(z._Fields[1][dy + 2][dy - 1]) &&
+          sEHex.adjacent(4).should.equal(z._Fields[1][dy + 1][dy - 1]) &&
+          sEHex.adjacent(5).should.equal(z._Fields[0][dx][0]);
       });
 
       it('should connect one of the section-internal hexagon’s adjacent fields.', function () {
         var dy = z._divisions,
             dx = dy * 2,
-            innerHex = z._Sections[0].get(dy + 1, 1);
+            innerHex = z._Fields[0][dy + 1][1];
         return dy.should.equal(3) && dx.should.equal(6) &&
           innerHex._adjacentFields.length.should.equal(6) &&
-          innerHex._adjacentFields[0].should.equal(z._Sections[0].get(dy, 1)) &&
-          innerHex._adjacentFields[1].should.equal(z._Sections[0].get(dy, 2)) &&
-          innerHex._adjacentFields[2].should.equal(z._Sections[0].get(dy + 1, 2)) &&
-          innerHex._adjacentFields[3].should.equal(z._Sections[0].get(dy + 2, 1)) &&
-          innerHex._adjacentFields[4].should.equal(z._Sections[0].get(dy + 2, 0)) &&
-          innerHex._adjacentFields[5].should.equal(z._Sections[0].get(dy + 1, 0));
+          innerHex.adjacent(0).should.equal(z._Fields[0][dy][1]) &&
+          innerHex.adjacent(1).should.equal(z._Fields[0][dy][2]) &&
+          innerHex.adjacent(2).should.equal(z._Fields[0][dy + 1][2]) &&
+          innerHex.adjacent(3).should.equal(z._Fields[0][dy + 2][1]) &&
+          innerHex.adjacent(4).should.equal(z._Fields[0][dy + 2][0]) &&
+          innerHex.adjacent(5).should.equal(z._Fields[0][dy + 1][0]);
       });
 
     });
@@ -315,7 +269,7 @@ describe('Sphere', function () {
       });
 
       it('should de-serialize data into Sphere instances.', function(){
-        return haysphere._Sections[1].get(2,0).data.needle.should.be.true;
+        return haysphere._Fields[1][2][0].data.needle.should.be.true;
       });
 
       it('should serialize into the exact same data as input.', function(){
@@ -332,7 +286,7 @@ describe('Sphere', function () {
 
     describe('fields’ data handling', function(){
 
-      var field = z._Sections[0].get(1,0);
+      var field = z._Fields[0][1][0];
 
       it('should be able to get an adjacent field', function(){
         return field.adjacent(0).should.be.an.instanceof(Field);
