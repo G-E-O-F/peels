@@ -1,16 +1,16 @@
 {
-  "name"           : "peels",
-  "version"        : "0.0.0",
-  "description"    : "A configurable spherical geodesic grid data model designed for simulations.",
-  "main"           : "index.js",
-  "scripts"        : {
+  "name": "peels",
+  "version": "0.0.0",
+  "description": "A configurable spherical geodesic grid data model designed for simulations.",
+  "main": "index.js",
+  "scripts": {
     "test": "mocha test/index.js"
   },
-  "repository"     : {
+  "repository": {
     "type": "git",
-    "url" : "https://github.com/thure/peels.git"
+    "url": "https://github.com/thure/peels.git"
   },
-  "keywords"       : [
+  "keywords": [
     "geodesic",
     "grid",
     "sphere",
@@ -20,19 +20,20 @@
     "climate",
     "earth"
   ],
-  "author"         : "Will Shown <w@willshown.com>",
-  "license"        : "MIT",
-  "bugs"           : {
+  "author": "Will Shown <w@willshown.com>",
+  "license": "MIT",
+  "bugs": {
     "url": "https://github.com/thure/peels/issues"
   },
-  "homepage"       : "https://github.com/thure/peels",
+  "homepage": "https://github.com/thure/peels",
   "devDependencies": {
-    "chai"            : "^1.9.2",
+    "chai": "^1.9.2",
     "chai-as-promised": "^4.1.1",
-    "mocha"           : "^2.0.1"
+    "mocha": "^2.0.1"
   },
-  "dependencies"   : {
+  "dependencies": {
+    "async": "^0.9.0",
     "lodash": "^2.4.1",
-    "q"     : "^1.0.1"
+    "q": "^1.0.1"
   }
 }

@@ -33,6 +33,7 @@ chai.use(chaiAsPromised);
 describe('Sphere', function () {
 
   var Sphere = require('../lib/sphere');
+  var validate = require('../lib/sphere/validate');
   var Field = require('../lib/field');
 
   // `s` is a sphere that is essentially an icosahedron, good for testing that strange case.
@@ -272,23 +273,23 @@ describe('Sphere', function () {
       };
 
       it('should validate well-formed serializations.', function(){
-        return s.validate(so).should.be.true;
+        return validate(so).should.be.true;
       });
 
       it('should not validate badly-formed serializations.', function(){
-        return s.validate(s1).should.be.false;
+        return validate(s1).should.be.false;
       });
 
       it('should not validate badly-formed serializations.', function(){
-        return s.validate(s2).should.be.false;
+        return validate(s2).should.be.false;
       });
 
       it('should not validate badly-formed serializations.', function(){
-        return s.validate(s3).should.be.false;
+        return validate(s3).should.be.false;
       });
 
       it('should not validate badly-formed serializations.', function(){
-        return s.validate(s4).should.be.false;
+        return validate(s4).should.be.false;
       });
 
     });
