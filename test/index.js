@@ -92,55 +92,55 @@ describe('Sphere', function () {
       });
 
       it('should connect one of the north-northeastern edge’s hexagon’s adjacent fields.', function () {
-        var nNEHex = z._Fields[0][1][0];
+        var nNEHex = z._Fields[0][0][0];
         return nNEHex.adjacent(0).should.equal(z._North) &&
           nNEHex._adjacentFields.length.should.equal(6) &&
-          nNEHex.adjacent(1).should.equal(z._Fields[4][1][0]) &&
-          nNEHex.adjacent(2).should.equal(z._Fields[0][1][1]) &&
-          nNEHex.adjacent(3).should.equal(z._Fields[0][2][0]) &&
-          nNEHex.adjacent(4).should.equal(z._Fields[1][1][1]) &&
-          nNEHex.adjacent(5).should.equal(z._Fields[1][1][0]);
+          nNEHex.adjacent(1).should.equal(z._Fields[4][0][0]) &&
+          nNEHex.adjacent(2).should.equal(z._Fields[0][0][1]) &&
+          nNEHex.adjacent(3).should.equal(z._Fields[0][1][0]) &&
+          nNEHex.adjacent(4).should.equal(z._Fields[1][0][1]) &&
+          nNEHex.adjacent(5).should.equal(z._Fields[1][0][0]);
       });
 
       it('should connect one of the east-northeastern edge’s hexagon’s adjacent fields.', function () {
         var dy = z._divisions,
-            eNEHex = z._Fields[0][dy + 1][0];
+            eNEHex = z._Fields[0][dy][0];
         return dy.should.equal(3) &&
           eNEHex._adjacentFields.length.should.equal(6) &&
-          eNEHex.adjacent(0).should.equal(z._Fields[0][dy][0]) &&
-          eNEHex.adjacent(1).should.equal(z._Fields[0][dy][1]) &&
-          eNEHex.adjacent(2).should.equal(z._Fields[0][dy + 1][1]) &&
-          eNEHex.adjacent(3).should.equal(z._Fields[0][dy + 2][0]) &&
-          eNEHex.adjacent(4).should.equal(z._Fields[1][2][dy - 1]) &&
-          eNEHex.adjacent(5).should.equal(z._Fields[1][1][dy - 1]);
+          eNEHex.adjacent(0).should.equal(z._Fields[0][dy - 1][0]) &&
+          eNEHex.adjacent(1).should.equal(z._Fields[0][dy - 1][1]) &&
+          eNEHex.adjacent(2).should.equal(z._Fields[0][dy][1]) &&
+          eNEHex.adjacent(3).should.equal(z._Fields[0][dy + 1][0]) &&
+          eNEHex.adjacent(4).should.equal(z._Fields[1][1][dy - 1]) &&
+          eNEHex.adjacent(5).should.equal(z._Fields[1][0][dy - 1]);
       });
 
       it('should connect one of the southeastern edge’s hexagon’s adjacent fields.', function () {
         var dy = z._divisions,
             dx = dy * 2,
-            sEHex = z._Fields[0][dx][1];
+            sEHex = z._Fields[0][dx - 1][1];
         return dy.should.equal(3) && dx.should.equal(6) &&
           sEHex._adjacentFields.length.should.equal(6) &&
-          sEHex.adjacent(0).should.equal(z._Fields[0][dx - 1][1]) &&
-          sEHex.adjacent(1).should.equal(z._Fields[0][dx - 1][2]) &&
-          sEHex.adjacent(2).should.equal(z._Fields[0][dx][2]) &&
-          sEHex.adjacent(3).should.equal(z._Fields[1][dy + 2][dy - 1]) &&
-          sEHex.adjacent(4).should.equal(z._Fields[1][dy + 1][dy - 1]) &&
-          sEHex.adjacent(5).should.equal(z._Fields[0][dx][0]);
+          sEHex.adjacent(0).should.equal(z._Fields[0][dx - 2][1]) &&
+          sEHex.adjacent(1).should.equal(z._Fields[0][dx - 2][2]) &&
+          sEHex.adjacent(2).should.equal(z._Fields[0][dx - 1][2]) &&
+          sEHex.adjacent(3).should.equal(z._Fields[1][dy + 1][dy - 1]) &&
+          sEHex.adjacent(4).should.equal(z._Fields[1][dy][dy - 1]) &&
+          sEHex.adjacent(5).should.equal(z._Fields[0][dx - 1][0]);
       });
 
       it('should connect one of the section-internal hexagon’s adjacent fields.', function () {
         var dy = z._divisions,
             dx = dy * 2,
-            innerHex = z._Fields[0][dy + 1][1];
+            innerHex = z._Fields[0][dy][1];
         return dy.should.equal(3) && dx.should.equal(6) &&
           innerHex._adjacentFields.length.should.equal(6) &&
-          innerHex.adjacent(0).should.equal(z._Fields[0][dy][1]) &&
-          innerHex.adjacent(1).should.equal(z._Fields[0][dy][2]) &&
-          innerHex.adjacent(2).should.equal(z._Fields[0][dy + 1][2]) &&
-          innerHex.adjacent(3).should.equal(z._Fields[0][dy + 2][1]) &&
-          innerHex.adjacent(4).should.equal(z._Fields[0][dy + 2][0]) &&
-          innerHex.adjacent(5).should.equal(z._Fields[0][dy + 1][0]);
+          innerHex.adjacent(0).should.equal(z._Fields[0][dy - 1][1]) &&
+          innerHex.adjacent(1).should.equal(z._Fields[0][dy - 1][2]) &&
+          innerHex.adjacent(2).should.equal(z._Fields[0][dy][2]) &&
+          innerHex.adjacent(3).should.equal(z._Fields[0][dy + 1][1]) &&
+          innerHex.adjacent(4).should.equal(z._Fields[0][dy + 1][0]) &&
+          innerHex.adjacent(5).should.equal(z._Fields[0][dy][0]);
       });
 
     });
@@ -154,7 +154,7 @@ describe('Sphere', function () {
       north: {},
       south: {},
       divisions: 1,
-      sections: [
+      fields: [
         [[{}], [{}]],
         [[{}], [{}]],
         [[{}], [{}]],
@@ -174,7 +174,7 @@ describe('Sphere', function () {
         north: {},
         south: {},
         divisions: 1,
-        sections: [
+        fields: [
           [[{}], [{}]],
           [[{}], [{}]],
           [[{}], [{}]],
@@ -189,7 +189,7 @@ describe('Sphere', function () {
         north: {},
         south: {},
         divisions: 2,
-        sections: [
+        fields: [
           [[{}], [{}]],
           [[{}], [{}]],
           [[{}], [{}]],
@@ -203,7 +203,7 @@ describe('Sphere', function () {
         north: {},
         south: {},
         divisions: 1,
-        sections: [
+        fields: [
           [[{}], [{}]],
           [[{}], [{}]],
           [[{}], [{}]],
@@ -217,7 +217,7 @@ describe('Sphere', function () {
         north: {},
         south: {},
         divisions: 1,
-        sections: [
+        fields: [
           [[{}], [{}]],
           [[{}], [{}]],
           [[{}], [{}, {}]],
@@ -255,7 +255,7 @@ describe('Sphere', function () {
         north: {},
         south: {},
         divisions: 1,
-        sections: [
+        fields: [
           [[{}], [{}]],
           [[{}], [{ needle: true }]],
           [[{}], [{}]],
@@ -269,7 +269,7 @@ describe('Sphere', function () {
       });
 
       it('should de-serialize data into Sphere instances.', function(){
-        return haysphere._Fields[1][2][0].data.needle.should.be.true;
+        return haysphere._Fields[1][1][0].data.needle.should.be.true;
       });
 
       it('should serialize into the exact same data as input.', function(){
