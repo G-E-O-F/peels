@@ -336,7 +336,7 @@ describe('Sphere', function () {
             φ: Math.PI / 2 - L
           },
           refSecond = {
-            λ: L,
+            λ: A,
             φ: Math.PI / 2 - L
           };
 
@@ -345,19 +345,11 @@ describe('Sphere', function () {
       var second = λφ.swim(refFirst, A, L);
 
       it('should swim to the first point accurately', function(){
-        console.log('Accuracy:', {
-          λ: first.λ - refFirst.λ,
-          φ: first.φ - refFirst.φ
-        });
         return first.λ.should.be.closeTo(refFirst.λ, tolerance) &&
                first.φ.should.be.closeTo(refFirst.φ, tolerance);
       });
 
       it('should swim to the second point accurately', function(){
-        console.log('Accuracy:', {
-          λ: second.λ - refSecond.λ,
-          φ: second.φ - refSecond.φ
-        });
         return second.λ.should.be.closeTo(refSecond.λ, tolerance) &&
                second.φ.should.be.closeTo(refSecond.φ, tolerance);
       });
