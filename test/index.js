@@ -35,6 +35,7 @@ describe('Sphere', function () {
   var Sphere = require('../lib/sphere');
   var validate = require('../lib/sphere/validate');
   var Field = require('../lib/field');
+  var λφ = require('../lib/sphere/set-λφ');
 
   // `s` is a sphere that is essentially an icosahedron, good for testing that strange case.
   var s = new Sphere({
@@ -282,9 +283,7 @@ describe('Sphere', function () {
 
   });
 
-  describe('iteration', function(){
-
-    describe('fields’ data handling', function(){
+  describe('data', function(){
 
       var field = z._Fields[0][1][0];
 
@@ -317,6 +316,50 @@ describe('Sphere', function () {
       it('should point to the latest data values when the Sphere starts a new iteration.', function(){
         z._iteration = { previous: 1, current: 2 };
         return field.data.apple.should.equal('pie');
+      });
+
+  });
+
+  describe('geometry', function(){
+
+    describe('navigation', function(){
+
+      var L = Math.acos(Math.sqrt(5) / 5),
+          A = 2 * Math.PI / 5,
+          tolerance = 1e-10,
+          north = {
+            λ: 1e-15,
+            φ: Math.PI / 2 + 1e-15
+          },
+          refFirst = {
+            λ: 0,
+            φ: Math.PI / 2 - L
+          },
+          refSecond = {
+            λ: L,
+            φ: Math.PI / 2 - L
+          };
+
+      var first = λφ.swim(north, 0, L);
+
+      var second = λφ.swim(refFirst, A, L);
+
+      it('should swim to the first point accurately', function(){
+        console.log('Accuracy:', {
+          λ: first.λ - refFirst.λ,
+          φ: first.φ - refFirst.φ
+        });
+        return first.λ.should.be.closeTo(refFirst.λ, tolerance) &&
+               first.φ.should.be.closeTo(refFirst.φ, tolerance);
+      });
+
+      it('should swim to the second point accurately', function(){
+        console.log('Accuracy:', {
+          λ: second.λ - refSecond.λ,
+          φ: second.φ - refSecond.φ
+        });
+        return second.λ.should.be.closeTo(refSecond.λ, tolerance) &&
+               second.φ.should.be.closeTo(refSecond.φ, tolerance);
       });
 
     });
