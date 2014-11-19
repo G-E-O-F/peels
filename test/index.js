@@ -341,8 +341,10 @@ describe('Sphere', function () {
           };
 
       var first = λφ.swim(north, 0, L);
-
+      var d_n_f = λφ.distance(north, first);
       var second = λφ.swim(refFirst, A, L);
+      var d_f_s = λφ.distance(first, second);
+      var mid1 = λφ.midpoint(first, second);
 
       it('should swim to the first point accurately', function(){
         return first.λ.should.be.closeTo(refFirst.λ, tolerance) &&
@@ -352,6 +354,18 @@ describe('Sphere', function () {
       it('should swim to the second point accurately', function(){
         return second.λ.should.be.closeTo(refSecond.λ, tolerance) &&
                second.φ.should.be.closeTo(refSecond.φ, tolerance);
+      });
+
+      it('should calculate distance accurately', function(){
+        return d_n_f.should.be.closeTo(L, tolerance) &&
+               d_f_s.should.be.closeTo(L, tolerance);
+      });
+
+      it('should interpolate intermediate points accurately', function(){
+        var int1 = λφ.interpolate(first, second, 2)[0];
+
+        return int1.λ.should.be.closeTo(mid1.λ, tolerance) &&
+               int1.φ.should.be.closeTo(mid1.φ, tolerance);
       });
 
     });
