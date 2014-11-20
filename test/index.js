@@ -322,22 +322,24 @@ describe('Sphere', function () {
 
   describe('geometry', function(){
 
-    describe('navigation', function(){
+    var π = Math.PI,
+        L = Math.acos(Math.sqrt(5) / 5),
+        A = 2 * π / 5,
+        tolerance = 1e-10;
 
-      var L = Math.acos(Math.sqrt(5) / 5),
-          A = 2 * Math.PI / 5,
-          tolerance = 1e-10,
-          north = {
+    describe('trigonometry', function(){
+
+      var north = {
             λ: 1e-15,
-            φ: Math.PI / 2 + 1e-15
+            φ: π / 2 + 1e-15
           },
           refFirst = {
             λ: 0,
-            φ: Math.PI / 2 - L
+            φ: π / 2 - L
           },
           refSecond = {
             λ: A,
-            φ: Math.PI / 2 - L
+            φ: π / 2 - L
           };
 
       var first = λφ.swim(north, 0, L);
@@ -346,26 +348,118 @@ describe('Sphere', function () {
       var d_f_s = λφ.distance(first, second);
       var mid1 = λφ.midpoint(first, second);
 
-      it('should swim to the first point accurately', function(){
+      it('should swim to the first point accurately.', function(){
         return first.λ.should.be.closeTo(refFirst.λ, tolerance) &&
                first.φ.should.be.closeTo(refFirst.φ, tolerance);
       });
 
-      it('should swim to the second point accurately', function(){
+      it('should swim to the second point accurately.', function(){
         return second.λ.should.be.closeTo(refSecond.λ, tolerance) &&
                second.φ.should.be.closeTo(refSecond.φ, tolerance);
       });
 
-      it('should calculate distance accurately', function(){
+      it('should calculate distance accurately.', function(){
         return d_n_f.should.be.closeTo(L, tolerance) &&
                d_f_s.should.be.closeTo(L, tolerance);
       });
 
-      it('should interpolate intermediate points accurately', function(){
+      it('should interpolate intermediate points accurately.', function(){
         var int1 = λφ.interpolate(first, second, 2)[0];
 
         return int1.λ.should.be.closeTo(mid1.λ, tolerance) &&
                int1.φ.should.be.closeTo(mid1.φ, tolerance);
+      });
+
+    });
+
+    describe('interpolation', function(){
+
+      λφ.populate(s);
+      λφ.populate(z);
+
+      describe('pentagons', function(){
+
+        it('should calculate the positions for polar fields accurately.', function(){
+
+          return s._North._pos.λ.should.be.closeTo(0, tolerance) &&
+                 s._North._pos.φ.should.be.closeTo(π/2, tolerance) &&
+                 s._South._pos.λ.should.be.closeTo(0, tolerance) &&
+                 s._South._pos.φ.should.be.closeTo(π/-2, tolerance);
+
+        });
+
+        it('should calculate the positions for tropical fields accurately.', function(){
+
+          return s._Fields[2][0][0]._pos.λ.should.be.closeTo(4*π/5, tolerance) &&
+                 s._Fields[2][0][0]._pos.φ.should.be.closeTo(π/2-L, tolerance) &&
+                 s._Fields[2][1][0]._pos.λ.should.be.closeTo(4*π/5 + π/5, tolerance) &&
+                 s._Fields[2][1][0]._pos.φ.should.be.closeTo(π/-2+L, tolerance);
+
+        });
+
+      });
+
+      describe('hexagons', function(){
+
+        describe('edge hexagons', function(){
+
+          var u = L/3;
+
+          it('should calculate the positions for northern polar edge fields accurately.', function(){
+
+            return z._Fields[2][1][0]._pos.λ.should.be.closeTo(4*π/5, tolerance) &&
+              z._Fields[2][1][0]._pos.φ.should.be.closeTo(π/2-L+u, tolerance);
+
+          });
+
+          it('should calculate the positions for second edge fields accurately.', function(){
+
+            var fieldPos = λφ.swim(z._Fields[2][2][0]._pos, -1 * A, u);
+
+            return z._Fields[2][1][1]._pos.λ.should.be.closeTo(fieldPos.λ, tolerance) &&
+              z._Fields[2][1][1]._pos.φ.should.be.closeTo(fieldPos.φ, tolerance);
+
+          });
+
+          it('should calculate the positions for third edge fields accurately.', function(){
+
+            var fieldPos = λφ.swim(z._Fields[2][2][0]._pos, -2 * A, u);
+
+            return z._Fields[2][2][1]._pos.λ.should.be.closeTo(fieldPos.λ, tolerance) &&
+              z._Fields[2][2][1]._pos.φ.should.be.closeTo(fieldPos.φ, tolerance);
+
+          });
+
+          it('should calculate the positions for fourth edge fields accurately.', function(){
+
+            var fieldPos = λφ.swim(z._Fields[2][2][0]._pos, -3 * A, u);
+
+            return z._Fields[2][3][0]._pos.λ.should.be.closeTo(fieldPos.λ, tolerance) &&
+              z._Fields[2][3][0]._pos.φ.should.be.closeTo(fieldPos.φ, tolerance);
+
+          });
+
+          it('should calculate the positions for fifth edge fields accurately.', function(){
+
+            var fieldCourse = λφ.course(z._Fields[2][5][0]._pos, z._Fields[2][4][1]._pos),
+                expectedA = (π - A);
+
+            // TODO: for some reason, swim is not accurate for this case.
+
+            return fieldCourse.a.should.be.closeTo(expectedA, tolerance) &&
+              fieldCourse.d.should.be.closeTo(u, tolerance);
+
+          });
+
+          it('should calculate the positions for southern polar edge fields accurately.', function(){
+
+            return z._Fields[2][5][1]._pos.λ.should.be.closeTo(π, tolerance) &&
+              z._Fields[2][5][1]._pos.φ.should.be.closeTo(π/-2+L-u, tolerance);
+
+          });
+
+        });
+
       });
 
     });
