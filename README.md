@@ -1,4 +1,4 @@
-<img src="http://i.imgur.com/hiuZzcd.png" height="150" title="GEOF.core.peels"/>
+<img src="http://i.imgur.com/TFW6FJq.png" height="123" title="GEOF.core.peels"/>
 
 [![Build Status](https://travis-ci.org/G-E-O-F/peels.svg)](https://travis-ci.org/G-E-O-F/peels)
 
