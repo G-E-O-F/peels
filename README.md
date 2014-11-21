@@ -1,4 +1,4 @@
-Peels
+<img src="http://i.imgur.com/hiuZzcd.png" height="150" title="GEOF.core.peels"/>
 =====
 
 [![Build Status](https://travis-ci.org/G-E-O-F/peels.svg)](https://travis-ci.org/G-E-O-F/peels)
