@@ -35,6 +35,7 @@ describe('Sphere', function () {
   var Sphere = require('../lib/sphere');
   var validate = require('../lib/sphere/validate');
   var Field = require('../lib/field');
+  var positions = require('../lib/sphere/positions');
 
   // `s` is a sphere that is essentially an icosahedron, good for testing that strange case.
   var s = new Sphere({
@@ -230,11 +231,11 @@ describe('Sphere', function () {
         return validate(so).should.be.true;
       });
 
-      it('should not validate badly-formed serializations.', function(){
+      it('should not validate serializations with an incongruous divisions index.', function(){
         return validate(s1).should.be.false;
       });
 
-      it('should not validate badly-formed serializations.', function(){
+      it('should not validate serializations with missing fields.', function(){
         return validate(s2).should.be.false;
       });
 
@@ -242,7 +243,7 @@ describe('Sphere', function () {
         return validate(s3).should.be.false;
       });
 
-      it('should not validate badly-formed serializations.', function(){
+      it('should not validate serializations with extra fields.', function(){
         return validate(s4).should.be.false;
       });
 
@@ -282,9 +283,7 @@ describe('Sphere', function () {
 
   });
 
-  describe('iteration', function(){
-
-    describe('fields’ data handling', function(){
+  describe('data', function(){
 
       var field = z._Fields[0][1][0];
 
@@ -317,6 +316,164 @@ describe('Sphere', function () {
       it('should point to the latest data values when the Sphere starts a new iteration.', function(){
         z._iteration = { previous: 1, current: 2 };
         return field.data.apple.should.equal('pie');
+      });
+
+  });
+
+  describe('geometry', function(){
+
+    var π = Math.PI,
+        L = Math.acos(Math.sqrt(5) / 5),
+        A = 2 * π / 5,
+        tolerance = 1e-10;
+
+    describe('trigonometry', function(){
+
+      var north = {
+            λ: 1e-15,
+            φ: π / 2 + 1e-15
+          },
+          refFirst = {
+            λ: 0,
+            φ: π / 2 - L
+          },
+          refSecond = {
+            λ: A,
+            φ: π / 2 - L
+          };
+
+      var d_n_f = positions.distance(north, refFirst);
+      var d_f_s = positions.distance(refFirst, refSecond);
+      var mid1 = positions.midpoint(refFirst, refSecond);
+
+      it('should calculate distance accurately.', function(){
+        return d_n_f.should.be.closeTo(L, tolerance) &&
+               d_f_s.should.be.closeTo(L, tolerance);
+      });
+
+      it('should interpolate intermediate points accurately.', function(){
+        var int1 = positions.interpolate(refFirst, refSecond, 2)[0];
+
+        return int1.λ.should.be.closeTo(mid1.λ, tolerance) &&
+               int1.φ.should.be.closeTo(mid1.φ, tolerance);
+      });
+
+    });
+
+    describe('interpolation', function(){
+
+      var u = L/3;
+
+      describe('pentagons', function(){
+
+        it('should calculate the positions for polar fields accurately.', function(){
+
+          return s._North._pos.λ.should.be.closeTo(0, tolerance) &&
+                 s._North._pos.φ.should.be.closeTo(π/2, tolerance) &&
+                 s._South._pos.λ.should.be.closeTo(0, tolerance) &&
+                 s._South._pos.φ.should.be.closeTo(π/-2, tolerance);
+
+        });
+
+        it('should calculate the positions for tropical fields accurately.', function(){
+
+          return s._Fields[2][0][0]._pos.λ.should.be.closeTo(4*π/5, tolerance) &&
+                 s._Fields[2][0][0]._pos.φ.should.be.closeTo(π/2-L, tolerance) &&
+                 s._Fields[2][1][0]._pos.λ.should.be.closeTo(4*π/5 + π/5, tolerance) &&
+                 s._Fields[2][1][0]._pos.φ.should.be.closeTo(π/-2+L, tolerance);
+
+        });
+
+      });
+
+      describe('hexagons', function(){
+
+        describe('edge hexagons', function(){
+
+          it('should calculate the positions for northern polar edge fields accurately.', function(){
+
+            return z._Fields[2][1][0]._pos.λ.should.be.closeTo(4*π/5, tolerance) &&
+              z._Fields[2][1][0]._pos.φ.should.be.closeTo(π/2-L+u, tolerance);
+
+          });
+
+          it('should calculate the positions for second edge fields accurately.', function(){
+
+            var fieldCourse = positions.course(z._Fields[2][2][0]._pos, z._Fields[2][1][1]._pos);
+
+            return fieldCourse.a.should.be.closeTo(A, tolerance) &&
+              fieldCourse.d.should.be.closeTo(u, tolerance);
+
+          });
+
+          it('should calculate the positions for third edge fields accurately.', function(){
+
+            var fieldCourse = positions.course(z._Fields[2][2][0]._pos, z._Fields[2][2][1]._pos);
+
+            return fieldCourse.a.should.be.closeTo(2 * A, tolerance) &&
+              fieldCourse.d.should.be.closeTo(u, tolerance);
+
+          });
+
+          it('should calculate the positions for fourth edge fields accurately.', function(){
+
+            var fieldCourse = positions.course(z._Fields[2][2][0]._pos, z._Fields[2][3][0]._pos);
+
+            return fieldCourse.a.should.be.closeTo(3 * A, tolerance) &&
+              fieldCourse.d.should.be.closeTo(u, tolerance);
+
+          });
+
+          it('should calculate the positions for fifth edge fields accurately.', function(){
+
+            var fieldCourse = positions.course(z._Fields[2][5][0]._pos, z._Fields[2][4][1]._pos);
+
+            return fieldCourse.a.should.be.closeTo((π - A), tolerance) &&
+              fieldCourse.d.should.be.closeTo(u, tolerance);
+
+          });
+
+          it('should calculate the positions for southern polar edge fields accurately.', function(){
+
+            return z._Fields[2][5][1]._pos.λ.should.be.closeTo(π, tolerance) &&
+              z._Fields[2][5][1]._pos.φ.should.be.closeTo(π/-2+L-u, tolerance);
+
+          });
+
+        });
+
+        describe('face hexagons', function(){
+
+          it('should calculate the positions for north polar face fields.', function(){
+
+            return z._Fields[3][0][1].should.have.deep.property('_pos.λ') &&
+              z._Fields[3][0][1]._pos.λ.should.be.a('number');
+
+          });
+
+          it('should calculate the positions for west tropical face fields.', function(){
+
+            return z._Fields[3][1][2].should.have.deep.property('_pos.λ') &&
+              z._Fields[3][1][2]._pos.λ.should.be.a('number');
+
+          });
+
+          it('should calculate the positions for east tropical face fields.', function(){
+
+            return z._Fields[3][3][1].should.have.deep.property('_pos.λ') &&
+              z._Fields[3][3][1]._pos.λ.should.be.a('number');
+
+          });
+
+          it('should calculate the positions for south polar face fields.', function(){
+
+            return z._Fields[3][4][2].should.have.deep.property('_pos.λ') &&
+              z._Fields[3][4][2]._pos.λ.should.be.a('number');
+
+          });
+
+        });
+
       });
 
     });
