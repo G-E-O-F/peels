@@ -377,6 +377,8 @@ describe('Sphere', function () {
       λφ.populate(s);
       λφ.populate(z);
 
+      var u = L/3;
+
       describe('pentagons', function(){
 
         it('should calculate the positions for polar fields accurately.', function(){
@@ -402,8 +404,6 @@ describe('Sphere', function () {
       describe('hexagons', function(){
 
         describe('edge hexagons', function(){
-
-          var u = L/3;
 
           it('should calculate the positions for northern polar edge fields accurately.', function(){
 
@@ -441,12 +441,11 @@ describe('Sphere', function () {
 
           it('should calculate the positions for fifth edge fields accurately.', function(){
 
-            var fieldCourse = λφ.course(z._Fields[2][5][0]._pos, z._Fields[2][4][1]._pos),
-                expectedA = (π - A);
+            var fieldCourse = λφ.course(z._Fields[2][5][0]._pos, z._Fields[2][4][1]._pos);
 
             // TODO: for some reason, swim is not accurate for this case.
 
-            return fieldCourse.a.should.be.closeTo(expectedA, tolerance) &&
+            return fieldCourse.a.should.be.closeTo((π - A), tolerance) &&
               fieldCourse.d.should.be.closeTo(u, tolerance);
 
           });
@@ -455,6 +454,34 @@ describe('Sphere', function () {
 
             return z._Fields[2][5][1]._pos.λ.should.be.closeTo(π, tolerance) &&
               z._Fields[2][5][1]._pos.φ.should.be.closeTo(π/-2+L-u, tolerance);
+
+          });
+
+        });
+
+        describe('face hexagons', function(){
+
+          it('should calculate the positions for north polar face fields.', function(){
+
+            return z._Fields[3][0][1].should.have.deep.property('_pos.λ');
+
+          });
+
+          it('should calculate the positions for west tropical face fields.', function(){
+
+            return z._Fields[3][1][2].should.have.deep.property('_pos.λ');
+
+          });
+
+          it('should calculate the positions for east tropical face fields.', function(){
+
+            return z._Fields[3][3][1].should.have.deep.property('_pos.λ');
+
+          });
+
+          it('should calculate the positions for south polar face fields.', function(){
+
+            return z._Fields[3][4][2].should.have.deep.property('_pos.λ');
 
           });
 
