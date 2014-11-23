@@ -231,11 +231,11 @@ describe('Sphere', function () {
         return validate(so).should.be.true;
       });
 
-      it('should not validate badly-formed serializations.', function(){
+      it('should not validate serializations with an incongruous divisions index.', function(){
         return validate(s1).should.be.false;
       });
 
-      it('should not validate badly-formed serializations.', function(){
+      it('should not validate serializations with missing fields.', function(){
         return validate(s2).should.be.false;
       });
 
@@ -243,7 +243,7 @@ describe('Sphere', function () {
         return validate(s3).should.be.false;
       });
 
-      it('should not validate badly-formed serializations.', function(){
+      it('should not validate serializations with extra fields.', function(){
         return validate(s4).should.be.false;
       });
 
@@ -463,25 +463,29 @@ describe('Sphere', function () {
 
           it('should calculate the positions for north polar face fields.', function(){
 
-            return z._Fields[3][0][1].should.have.deep.property('_pos.λ');
+            return z._Fields[3][0][1].should.have.deep.property('_pos.λ') &&
+              z._Fields[3][0][1]._pos.λ.should.be.a('number');
 
           });
 
           it('should calculate the positions for west tropical face fields.', function(){
 
-            return z._Fields[3][1][2].should.have.deep.property('_pos.λ');
+            return z._Fields[3][1][2].should.have.deep.property('_pos.λ') &&
+              z._Fields[3][1][2]._pos.λ.should.be.a('number');
 
           });
 
           it('should calculate the positions for east tropical face fields.', function(){
 
-            return z._Fields[3][3][1].should.have.deep.property('_pos.λ');
+            return z._Fields[3][3][1].should.have.deep.property('_pos.λ') &&
+              z._Fields[3][3][1]._pos.λ.should.be.a('number');
 
           });
 
           it('should calculate the positions for south polar face fields.', function(){
 
-            return z._Fields[3][4][2].should.have.deep.property('_pos.λ');
+            return z._Fields[3][4][2].should.have.deep.property('_pos.λ') &&
+              z._Fields[3][4][2]._pos.λ.should.be.a('number');
 
           });
 
