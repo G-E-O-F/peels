@@ -35,7 +35,7 @@ describe('Sphere', function () {
   var Sphere = require('../lib/sphere');
   var validate = require('../lib/sphere/validate');
   var Field = require('../lib/field');
-  var λφ = require('../lib/sphere/set-λφ');
+  var positions = require('../lib/sphere/positions');
 
   // `s` is a sphere that is essentially an icosahedron, good for testing that strange case.
   var s = new Sphere({
@@ -342,21 +342,9 @@ describe('Sphere', function () {
             φ: π / 2 - L
           };
 
-      var first = λφ.swim(north, 0, L);
-      var d_n_f = λφ.distance(north, first);
-      var second = λφ.swim(refFirst, A, L);
-      var d_f_s = λφ.distance(first, second);
-      var mid1 = λφ.midpoint(first, second);
-
-      it('should swim to the first point accurately.', function(){
-        return first.λ.should.be.closeTo(refFirst.λ, tolerance) &&
-               first.φ.should.be.closeTo(refFirst.φ, tolerance);
-      });
-
-      it('should swim to the second point accurately.', function(){
-        return second.λ.should.be.closeTo(refSecond.λ, tolerance) &&
-               second.φ.should.be.closeTo(refSecond.φ, tolerance);
-      });
+      var d_n_f = positions.distance(north, refFirst);
+      var d_f_s = positions.distance(refFirst, refSecond);
+      var mid1 = positions.midpoint(refFirst, refSecond);
 
       it('should calculate distance accurately.', function(){
         return d_n_f.should.be.closeTo(L, tolerance) &&
@@ -364,7 +352,7 @@ describe('Sphere', function () {
       });
 
       it('should interpolate intermediate points accurately.', function(){
-        var int1 = λφ.interpolate(first, second, 2)[0];
+        var int1 = positions.interpolate(refFirst, refSecond, 2)[0];
 
         return int1.λ.should.be.closeTo(mid1.λ, tolerance) &&
                int1.φ.should.be.closeTo(mid1.φ, tolerance);
@@ -373,9 +361,6 @@ describe('Sphere', function () {
     });
 
     describe('interpolation', function(){
-
-      λφ.populate(s);
-      λφ.populate(z);
 
       var u = L/3;
 
@@ -414,36 +399,34 @@ describe('Sphere', function () {
 
           it('should calculate the positions for second edge fields accurately.', function(){
 
-            var fieldPos = λφ.swim(z._Fields[2][2][0]._pos, -1 * A, u);
+            var fieldCourse = positions.course(z._Fields[2][2][0]._pos, z._Fields[2][1][1]._pos);
 
-            return z._Fields[2][1][1]._pos.λ.should.be.closeTo(fieldPos.λ, tolerance) &&
-              z._Fields[2][1][1]._pos.φ.should.be.closeTo(fieldPos.φ, tolerance);
+            return fieldCourse.a.should.be.closeTo(A, tolerance) &&
+              fieldCourse.d.should.be.closeTo(u, tolerance);
 
           });
 
           it('should calculate the positions for third edge fields accurately.', function(){
 
-            var fieldPos = λφ.swim(z._Fields[2][2][0]._pos, -2 * A, u);
+            var fieldCourse = positions.course(z._Fields[2][2][0]._pos, z._Fields[2][2][1]._pos);
 
-            return z._Fields[2][2][1]._pos.λ.should.be.closeTo(fieldPos.λ, tolerance) &&
-              z._Fields[2][2][1]._pos.φ.should.be.closeTo(fieldPos.φ, tolerance);
+            return fieldCourse.a.should.be.closeTo(2 * A, tolerance) &&
+              fieldCourse.d.should.be.closeTo(u, tolerance);
 
           });
 
           it('should calculate the positions for fourth edge fields accurately.', function(){
 
-            var fieldPos = λφ.swim(z._Fields[2][2][0]._pos, -3 * A, u);
+            var fieldCourse = positions.course(z._Fields[2][2][0]._pos, z._Fields[2][3][0]._pos);
 
-            return z._Fields[2][3][0]._pos.λ.should.be.closeTo(fieldPos.λ, tolerance) &&
-              z._Fields[2][3][0]._pos.φ.should.be.closeTo(fieldPos.φ, tolerance);
+            return fieldCourse.a.should.be.closeTo(3 * A, tolerance) &&
+              fieldCourse.d.should.be.closeTo(u, tolerance);
 
           });
 
           it('should calculate the positions for fifth edge fields accurately.', function(){
 
-            var fieldCourse = λφ.course(z._Fields[2][5][0]._pos, z._Fields[2][4][1]._pos);
-
-            // TODO: for some reason, swim is not accurate for this case.
+            var fieldCourse = positions.course(z._Fields[2][5][0]._pos, z._Fields[2][4][1]._pos);
 
             return fieldCourse.a.should.be.closeTo((π - A), tolerance) &&
               fieldCourse.d.should.be.closeTo(u, tolerance);
