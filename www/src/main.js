@@ -10,6 +10,14 @@
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera( 33, 1, 0.1, 1000 );
 
+
+  // Lighting
+
+  scene.add( new THREE.AmbientLight( 0x97867C ) );
+  scene.add( new THREE.HemisphereLight( 0xC6C2B6, 0x3A403B, .85 ) );
+
+  // Renderer
+
   var pixelRatio = matchMedia('(-webkit-min-device-pixel-ratio: 2)').matches ? 2 : 1;
 
   var renderer = new THREE.WebGLRenderer({
@@ -19,9 +27,9 @@
 
   var geometry = sphereGeometry(s);
 
-  var material = new THREE.MeshBasicMaterial({
-    color: 0xc6c2b6,
-    wireframe: true
+  var material = new THREE.MeshPhongMaterial({
+    shading: THREE.SmoothShading,
+    vertexColors: THREE.VertexColors
   });
 
   var sphere = new THREE.Mesh( geometry, material );
