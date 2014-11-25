@@ -3,7 +3,7 @@
   var _ = require('lodash'),
       Peels = require('../../index.js'),
       THREE = require('three'),
-      mesh = require('./sphere-mesh');
+      sphereGeometry = require('./sphere-geometry');
 
   var s = new Peels({divisions: 32});
 
@@ -17,7 +17,7 @@
     antialias: true
   });
 
-  var geometry = mesh(s);
+  var geometry = sphereGeometry(s);
 
   var material = new THREE.MeshBasicMaterial({
     color: 0xc6c2b6,
