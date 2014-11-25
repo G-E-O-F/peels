@@ -5,7 +5,7 @@
       THREE = require('three'),
       sphereGeometry = require('./sphere-geometry');
 
-  var s = new Peels({divisions: 32});
+  var s = new Peels({divisions: 64});
 
   var scene = new THREE.Scene();
   var camera = new THREE.PerspectiveCamera( 33, 1, 0.1, 1000 );
@@ -33,6 +33,7 @@
   });
 
   var sphere = new THREE.Mesh( geometry, material );
+  sphere.rotation.x += Math.PI/2;
   scene.add( sphere );
 
   camera.position.z = 5;
@@ -48,9 +49,7 @@
   var render = function () {
     requestAnimationFrame(render);
 
-    sphere.rotation.x += 0.002;
-    sphere.rotation.y += 0.001;
-    sphere.rotation.z += 0.001;
+    sphere.rotation.z -= 0.003;
 
     renderer.render(scene, camera);
   };
