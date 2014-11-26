@@ -1,5 +1,5 @@
-<img src="https://rawgit.com/G-E-O-F/peels/www/docs/assets/geof8.min.svg" height="120" title="GEOF.core" style="margin-right: 20px;"/>
 <img src="https://rawgit.com/G-E-O-F/peels/www/docs/assets/geof-peels.svg" height="120" title="GEOF.core.peels"/>
+<img src="https://rawgit.com/G-E-O-F/peels/www/docs/assets/geof8.min.svg" height="120" title="GEOF.core" align="right"/>
 
 [![Build Status](https://travis-ci.org/G-E-O-F/peels.svg)](https://travis-ci.org/G-E-O-F/peels)
 
