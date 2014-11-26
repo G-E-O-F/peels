@@ -39,8 +39,9 @@
 
   var geometry = sphereGeometry(s, {
     colorFn: function(data, pos, sxy){
-      var k = Math.abs(pos.φ) / (Math.PI/2);
-      return colorEqP(Math.pow(k, 1.8));
+      var rφ = Math.min((Math.random() * Math.PI/30) + Math.abs(pos.φ), Math.PI/2),
+        k = rφ / (Math.PI/2);
+      return colorEqP(Math.pow(k, 1.7));
     }
   });
 
@@ -67,8 +68,6 @@
     requestAnimationFrame(render);
 
     sphere.rotation.z -= 0.005;
-    sphere.rotation.y -= 0.007;
-    sphere.rotation.x += 0.003;
 
     renderer.render(scene, camera);
   };
