@@ -3,6 +3,7 @@
   var _ = require('lodash'),
       Peels = require('../../index.js'),
       THREE = require('three'),
+      color = require('color'),
       sphereGeometry = require('./sphere-geometry');
 
   var s = new Peels({divisions: 64});
@@ -25,7 +26,23 @@
     antialias: true
   });
 
-  var geometry = sphereGeometry(s);
+  var ce = color('#86ABA5'),
+      cp = color('#003171');
+
+  var colorEqP = function(blend){
+    var cr = color();
+    cr.red( ce.red() * (1 - blend) + cp.red() * blend );
+    cr.green( ce.green() * (1 - blend) + cp.green() * blend );
+    cr.blue( ce.blue() * (1 - blend) + cp.blue() * blend );
+    return cr.hexString();
+  };
+
+  var geometry = sphereGeometry(s, {
+    colorFn: function(data, pos, sxy){
+      var k = Math.abs(pos.φ) / (Math.PI/2);
+      return colorEqP(Math.pow(k, 1.8));
+    }
+  });
 
   var material = new THREE.MeshPhongMaterial({
     shading: THREE.SmoothShading,
@@ -49,7 +66,9 @@
   var render = function () {
     requestAnimationFrame(render);
 
-    sphere.rotation.z -= 0.003;
+    sphere.rotation.z -= 0.005;
+    sphere.rotation.y -= 0.007;
+    sphere.rotation.x += 0.003;
 
     renderer.render(scene, camera);
   };
