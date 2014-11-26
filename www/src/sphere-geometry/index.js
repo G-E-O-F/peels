@@ -1,41 +1,11 @@
 (function(){
 
   var _ = require('lodash'),
-      THREE = require('three'),
-      color = require('color');
+      THREE = require('three');
 
-  module.exports = function(Sphere){
+  module.exports = function(Sphere, opts){
 
-    var vfa = Sphere.toCG({
-      colorFn: function(data, pos, sxy){
-        var color;
-        if(sxy === 'NORTH' || sxy === 'SOUTH'){
-          color = 'black';
-        }else{
-          switch(sxy[0]){
-            case 0:
-              color = '#DC3023';
-              break;
-            case 1:
-              color = '#FFA631';
-              break;
-            case 2:
-              color = '#5B8930';
-              break;
-            case 3:
-              color = '#317589';
-              break;
-            case 4:
-              color = '#8F4155';
-              break;
-            default:
-              color = 'white';
-              break;
-          }
-        }
-        return color;
-      }
-    });
+    var vfa = Sphere.toCG(opts);
 
     var geometry = new THREE.Geometry();
 
