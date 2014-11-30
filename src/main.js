@@ -6,6 +6,8 @@
       color = require('color'),
       sphereGeometry = require('./sphere-geometry');
 
+  var π = Math.PI;
+
   var s = new Peels({divisions: 64});
 
   var scene = new THREE.Scene();
@@ -39,8 +41,8 @@
 
   var geometry = sphereGeometry(s, {
     colorFn: function(data, pos, sxy){
-      var rφ = Math.min((Math.random() * Math.PI/30) + Math.abs(pos.φ), Math.PI/2),
-        k = rφ / (Math.PI/2);
+      var rφ = Math.min((Math.random() * π/30) + Math.abs(pos.φ), π/2),
+        k = rφ / (π/2);
       return colorEqP(Math.pow(k, 1.7));
     }
   });
@@ -51,7 +53,7 @@
   });
 
   var sphere = new THREE.Mesh( geometry, material );
-  sphere.rotation.x += Math.PI/2;
+  sphere.rotation.x += π/2;
   scene.add( sphere );
 
   camera.position.z = 5;
@@ -64,12 +66,12 @@
 
   }; renderSize();
 
+  var radpm = -2 * (2*π);
+
   var render = function () {
-    requestAnimationFrame(render);
-
-    sphere.rotation.z -= 0.005;
-
+    sphere.rotation.z = radpm * (Date.now() % 60e3) / 60e3;
     renderer.render(scene, camera);
+    requestAnimationFrame(render);
   };
 
   document.addEventListener('DOMContentLoaded', function(e){
