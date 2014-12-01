@@ -49,16 +49,36 @@ module.exports = function(grunt) {
       }
     },
     copy: {
-      html: {
+      disthtml: {
         src: './www/src/index.html',
         dest: './www/dist/index.html'
+      },
+      prodhtml: {
+        src: './www/dist/index.html',
+        dest: './www/index.html'
+      }
+    },
+    uglify: {
+      prod: {
+        files: {
+          './www/main.js': './www/dist/main.js'
+        }
+      }
+    },
+    cssmin: {
+      prod: {
+        files: {
+          './www/main.css': './www/dist/main.css'
+        }
       }
     }
   });
 
   grunt.registerTask('default',   ['dist']);
   grunt.registerTask('styles',    ['less', 'autoprefixer']);
-  grunt.registerTask('dist:copy', ['copy']);
+  grunt.registerTask('dist:copy', ['copy:disthtml']);
   grunt.registerTask('dist',      ['styles', 'browserify', 'dist:copy']);
+  grunt.registerTask('prod:copy', ['copy:prodhtml']);
+  grunt.registerTask('prod',      ['dist', 'uglify:prod', 'cssmin:prod', 'prod:copy']);
 
 };
