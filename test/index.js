@@ -24,7 +24,8 @@ var assert = require('assert'),
     chai = require('chai'),
     chaiAsPromised = require("chai-as-promised"),
     expect = chai.expect,
-    _ = require('lodash');
+    _ = require('lodash'),
+    q = require('q');
 
 chai.should();
 chai.use(chaiAsPromised);
@@ -316,6 +317,26 @@ describe('Sphere', function () {
         z._iteration = { previous: 1, current: 2 };
         return field.data.apple.should.equal('pie');
       });
+
+  });
+
+  describe('iteration', function(){
+
+    it('should be able to set every value.', function(){
+      var d = q.defer();
+
+      s.iterate(function(done){
+        this.data = 1;
+        done();
+      }, d.resolve);
+
+      return d.promise.should.eventually.satisfy(function(){
+
+        return s._North.data === 1 && s._South.data === 1 && s._Fields[0][0][0].data === 1;
+
+      });
+
+    })
 
   });
 
