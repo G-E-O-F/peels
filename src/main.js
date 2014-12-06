@@ -54,7 +54,7 @@
   var colorFn = function(data, pos, sxy){
     var rφ = Math.min(Math.abs(pos.φ), π/2),
         k = rφ / (π/2);
-    return colorBlend(Math.pow(k, (1 + data * .7 || 1.7)));
+    return colorBlend(Math.pow(k, (1.2 + data * .7 || 1.9)));
   };
 
   var geometry = sphereGeometry(s, { colorFn: colorFn });
@@ -71,7 +71,7 @@
   // DOM bindings and render loop
 
   var perField = function(done){
-    this.data = Math.sin(2 * π * (Date.now() % 10e3) / 10e3);
+    this.data = Math.sin(2 * π * (Date.now() % 5e3) / 5e3);
     done();
   };
 
