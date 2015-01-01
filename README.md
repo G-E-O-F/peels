@@ -13,12 +13,16 @@ The literature extolling spherical geodesic grids as data models for simulations
 
 First, install:
 
-    npm install --save g-e-o-f/peels
+```bash
+npm install --save g-e-o-f/peels
+```
 
 Next, make a sphere:
 
-    var Sphere = require('peels'),
-        sphere = new Sphere({divisions: 8});
+```javascript
+var Sphere = require('peels'),
+    sphere = new Sphere({divisions: 8});
+```
 
 Peels is still in development; bear in mind the API is likely to change in the near future, especially for methods & properties that begin with an underscore.
 
@@ -54,13 +58,15 @@ Once `perField` has been called for all fields in the sphere, `done` is called w
 
 e.g.:
 
-    planet.iterate(function(done){
-      this.data = {
-        temperature: getTemp(this._pos),
-        pressure: getPressure(this._pos)
-      };
-      done();
-    }, d.resolve);
+```javascript
+planet.iterate(function(done){
+  this.data = {
+    temperature: getTemp(this._pos),
+    pressure: getPressure(this._pos)
+  };
+  done();
+}, d.resolve);
+```
 
 During iteration, every field’s `data` property is only affected after the iteration is complete for all fields, so it's safe to assume an adjacent field’s `data` will be consistent no matter when during the iteration it’s accessed.
 
@@ -68,30 +74,32 @@ During iteration, every field’s `data` property is only affected after the ite
 
 Meant to be used in conjunction with [ThreeJS](http://threejs.org/).
 
-Returns an object with the keys `vertices`, `faces` populated by cartesian coordinates and indices required to visualize the model with ThreeJS. Also returns an additional key `colors` if `options` has a `colorFn` function specified.
+Returns an object with the keys `vertices` and `faces` populated by cartesian coordinates and indices required to visualize the model with ThreeJS. Also returns an additional key `colors` if `options` has a `colorFn` function specified.
 
 e.g.:
 
-    var vfc = planet.toCG(opts);
+```javascript
+var vfc = planet.toCG(opts);
 
-    var geometry = new THREE.Geometry();
+var geometry = new THREE.Geometry();
 
-    _.each(vfc.vertices, function(vertex){
-      geometry.vertices.push(
-        new THREE.Vector3(vertex.x, vertex.y, vertex.z)
-      );
-    });
+_.each(vfc.vertices, function(vertex){
+  geometry.vertices.push(
+    new THREE.Vector3(vertex.x, vertex.y, vertex.z)
+  );
+});
 
-    _.each(vfc.faces, function(face, fi){
-      var triangle = new THREE.Face3(face[0], face[1], face[2]);
-      triangle.vertexColors[0] = vfc.colors[face[0]];
-      triangle.vertexColors[1] = vfc.colors[face[1]];
-      triangle.vertexColors[2] = vfc.colors[face[2]];
-      geometry.faces[fi] = triangle;
-    });
+_.each(vfc.faces, function(face, fi){
+  var triangle = new THREE.Face3(face[0], face[1], face[2]);
+  triangle.vertexColors[0] = vfc.colors[face[0]];
+  triangle.vertexColors[1] = vfc.colors[face[1]];
+  triangle.vertexColors[2] = vfc.colors[face[2]];
+  geometry.faces[fi] = triangle;
+});
 
-    geometry.computeFaceNormals();
-    geometry.computeVertexNormals();
+geometry.computeFaceNormals();
+geometry.computeVertexNormals();
+```
 
 #### `sphere.bindGeometry(geometry, colorFn)`
 
@@ -121,10 +129,12 @@ Returns an array of the fields adjacent to this one. The length of the array wil
 
 An object with spherical latitude/longitude coordinates of the field's barycenter in the style used to navigate Earth **in radians**. The key `λ` is latitude (from 0 to 2π), and the key `φ` is longitude (between π/2 and -π/2, positive is north and negative is south), e.g. a field centered on Seattle would be near:
 
-    {
-        φ: 0.8310430088332776
-        λ: 4.148333263285652
-    }
+```json
+{
+    "φ": 0.8310430088332776,
+    "λ": 4.148333263285652
+}
+```
 
 This property is set during the sphere’s construction and shouldn’t be modified.
 
