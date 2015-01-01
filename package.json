@@ -1,6 +1,6 @@
 {
   "name": "peels",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A configurable spherical geodesic grid data model designed for simulations.",
   "main": "index.js",
   "scripts": {
