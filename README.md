@@ -5,7 +5,7 @@
 
 A configurable spherical geodesic grid data model designed for simulations and visualization.
 
-The literature extolling spherical geodesic grids as data models for simulations of 2½D spherical phenomena like oceanography and climate is enormous (see references below), but the algorithms for those simulations are often written for research-oriented platforms, making accessibility and portability a problem.
+The literature extolling spherical geodesic grids as data models for simulations of 2½D spherical phenomena like oceanography and climate is enormous (see references below), but the algorithms for those simulations are often written for research-oriented platforms (i.e. in FORTRAN), making accessibility and portability an issue.
 
 **Peels** is the first attempt at a JavaScript implementation of the spherical geodesic grid data model for use in browsers or Node. While it was developed as the first component of [GEOF](http://github.com/G-E-O-F), Peels has no gaming-specific functionality and should be useful for other goals as well.
 
