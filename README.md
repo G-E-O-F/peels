@@ -14,7 +14,7 @@ The literature extolling spherical geodesic grids as data models for simulations
 First, install:
 
 ```bash
-npm install --save g-e-o-f/peels
+npm install --save peels
 ```
 
 Next, make a sphere:
