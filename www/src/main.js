@@ -79,7 +79,10 @@
     return colorBlend(Math.pow(k, (1.2 + data * .7 || 1.9)));
   };
 
-  var geometry = sphereGeometry(s, { colorFn: colorFn });
+  var geometry = sphereGeometry(s, {
+    colorFn: colorFn,
+  //  type: 'fields'
+  });
 
   var material = new THREE.MeshPhongMaterial({
     shading: THREE.SmoothShading,
@@ -87,7 +90,6 @@
   });
 
   var sphere = new THREE.Mesh( geometry, material );
-  sphere.rotation.x -= π/2;
   scene.add( sphere );
 
   // DOM bindings and render loop
@@ -110,7 +112,7 @@
     var radpm = -2 * (2*π);
 
     var render = function () {
-      sphere.rotation.z = radpm * (Date.now() % 60e3) / 60e3;
+      sphere.rotation.y = radpm * (Date.now() % 60e3) / 60e3;
       renderer.render(scene, camera);
       requestAnimationFrame(function(){
         render.call(this, arguments);
