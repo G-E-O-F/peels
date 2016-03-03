@@ -22,7 +22,7 @@
 
 (function(){
 
-  var _ = require('lodash'),
+  var _ = require('underscore'),
       Sphere = require('../../index.js'),
       THREE = require('three'),
       color = require('color'),
@@ -101,7 +101,6 @@
 
     var iterNext = false,
         iterator = function(next){
-          console.log('iterate');
           iterNext = false;
           s.iterate(perField, function(){
             iterNext = next;
