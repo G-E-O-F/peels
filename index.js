@@ -33,7 +33,7 @@ var main = function () {
 };
 
 if (require.main === module) {
-  main();
+  return main();
 } else {
   module.exports = Sphere;
 }
