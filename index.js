@@ -26,7 +26,7 @@
  * University: <http://kiwi.atmos.colostate.edu/BUGS/geodesic/>.
  */
 
-var Sphere = require('./lib/sphere/index');
+var Sphere = require('./lib/sphere');
 
 var main = function () {
   return new Sphere();
