@@ -152,15 +152,9 @@ describe('Sphere', function () {
 
     // `so` is the serialized version of `s`
     var so = {
-      north: {},
-      south: {},
       divisions: 1,
       fields: [
-        [[{}], [{}]],
-        [[{}], [{}]],
-        [[{}], [{}]],
-        [[{}], [{}]],
-        [[{}], [{}]]
+        {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
       ]
     };
 
@@ -253,15 +247,9 @@ describe('Sphere', function () {
 
       // `haysphereData` is the serialized version of `s` with some data in it
       var haysphereData = {
-        north: {},
-        south: {},
         divisions: 1,
         fields: [
-          [[{}], [{}]],
-          [[{}], [{ needle: true }]],
-          [[{}], [{}]],
-          [[{}], [{}]],
-          [[{}], [{}]]
+          {}, {}, {}, {}, {}, {needle: true}, {}, {}, {}, {}, {}, {}
         ]
       };
 
