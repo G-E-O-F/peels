@@ -1,0 +1,35 @@
+@import '../lib/reset.css';
+
+html, body {
+  height: 100%;
+}
+
+$bg: #27221F;
+
+body {
+
+  background-image: radial-gradient(
+      ellipse farthest-corner at bottom center,
+      $bg 0%,
+      #12100E 60%,
+      #000000 100%
+  );
+
+  position: relative;
+
+  & > canvas {
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+
+    opacity: 0;
+    transition: opacity 1s linear;
+
+    width: 100% !important;
+    height: 100% !important;
+
+    &.ready {
+      opacity: 1;
+    }
+  }
+
+}
