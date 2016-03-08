@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Will Shown. All Rights Reserved.
+ * Copyright (c) 2015 Will Shown. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,43 +20,11 @@
  * SOFTWARE.
  */
 
-(function(){
+module.exports = {
 
-  var _ = require('underscore'),
-      THREE = require('three');
+  divisions: 8,
+  wireframe: true,
+  wireframeLinewidth: 1.2,
+  coloration: 'highlight-icosahedron'
 
-  module.exports = function(Sphere, opts){
-
-    var geometry = new THREE.Geometry();
-
-    Sphere.toCG(opts, function(err, vfc){
-
-      _.each(vfc.vertices, function(vertex){
-        geometry.vertices.push(
-          new THREE.Vector3(vertex.x, vertex.y, vertex.z)
-        );
-      });
-
-      _.each(vfc.faces, function(face, fi){
-        var triangle = new THREE.Face3(face[0], face[1], face[2]);
-        triangle.vertexColors[0] = vfc.colors[face[0]];
-        triangle.vertexColors[1] = vfc.colors[face[1]];
-        triangle.vertexColors[2] = vfc.colors[face[2]];
-        geometry.faces[fi] = triangle;
-      });
-
-      geometry.computeFaceNormals();
-      geometry.computeVertexNormals();
-
-      Sphere.bindGeometry(geometry, opts.colorFn);
-
-      geometry.needsUpdate = true;
-      geometry.verticesNeedUpdate = true;
-
-    });
-
-    return geometry;
-
-  }
-
-}());
+};

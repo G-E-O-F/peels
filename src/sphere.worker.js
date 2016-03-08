@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Will Shown. All Rights Reserved.
+ * Copyright (c) 2015 Will Shown. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,26 +20,41 @@
  * SOFTWARE.
  */
 
-@import (less) '../lib/reset.css';
+var Sphere = require('../../index.js');
 
-html, body {
-    height: 100%;
-}
+onmessage = function(e){
 
-body {
+  var opts = e.data || {};
 
-    background-image: radial-gradient(
-            ellipse farthest-corner at bottom center,
-            lighten(#C6C2B6, 40) 0%,
-            lighten(#C6C2B6, 20) 60%,
-            #C6C2B6 100%
-    );
+  var s = new Sphere({divisions: opts.divisions});
 
-    display: flex;
-    flex-flow: row nowrap;
+  var colorFn;
 
-    & > canvas {
-        flex: 1 1 0;
-    }
+  switch(opts.coloration) {
+    case 'highlight-icosahedron':
+      colorFn = function(data, pos, sxy){
+        var d = this._parent._divisions,
+            onEdge = (
+              (sxy[1] + sxy[2] + 1) % d === 0 ||
+              (sxy[1] + 1) % d === 0 ||
+              sxy[2] === 0
+            );
+        if( onEdge ){
+          return '#C6C2B6'
+        }else{
+          return '#4D646C'
+        }
+      };
+      break;
+    default:
+      colorFn = function(){
+        return '#C6C2B6';
+      };
+      break;
+  }
 
-}
+  s.toCG({ colorFn: colorFn }, function(err, vfc){
+    postMessage(vfc);
+  });
+
+};
