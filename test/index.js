@@ -23,8 +23,7 @@
 var assert = require('assert'),
     chai = require('chai'),
     chaiAsPromised = require("chai-as-promised"),
-    expect = chai.expect,
-    _ = require('underscore'),
+    _ = require('lodash'),
     q = require('q');
 
 chai.should();
