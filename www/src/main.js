@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 
-var domready = require('domready'),
-    Coordinator = require('./sphere-coordinator');
+import domready from 'domready';
+import Coordinator from './sphere-coordinator';
 
 domready(function(){
   var coordinator = new Coordinator();

@@ -20,11 +20,7 @@
  * SOFTWARE.
  */
 
-module.exports = {
-
-  divisions: 8,
-  wireframe: true,
-  wireframeLinewidth: 1.2,
-  coloration: 'highlight-icosahedron'
-
-};
+export const divisions = 8;
+export const wireframe = true;
+export const wireframeLinewidth = 1.2;
+export const coloration = 'highlight-icosahedron';
