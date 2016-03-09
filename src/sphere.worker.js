@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-var Sphere = require('../../index.js');
+import Sphere from '../../index.js';
 
 onmessage = function(e){
 

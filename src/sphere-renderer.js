@@ -20,142 +20,141 @@
  * SOFTWARE.
  */
 
-var THREE = require('three');
+import THREE from 'three';
 
-import { throttle, each, extend, pick} from 'lodash';
+import { throttle, each, extend, pick } from 'lodash';
 
-var π = Math.PI,
-    constants = require('./constants');
+const π         = Math.PI,
+      constants = require('./constants');
 
-function Renderer(canvas){
-  var self = this;
+class Renderer {
 
-  // Camera & Scene
+  constructor(canvas) {
 
-  this.scene = new THREE.Scene();
-  this.scene.fog = new THREE.Fog( 0x000000, 4.5, 6.5);
+    // Camera & Scene
 
-  this.camera = new THREE.PerspectiveCamera( 33, window.innerWidth / window.innerHeight, 0.1, 100 );
-  this.camera.position.set(0, 0, 5);
-  this.camera.lookAt( new THREE.Vector3(0, 0, 0) );
+    this.scene     = new THREE.Scene();
+    this.scene.fog = new THREE.Fog(0x000000, 4.5, 6.5);
 
-  // Lighting
+    this.camera = new THREE.PerspectiveCamera(33, window.innerWidth / window.innerHeight, 0.1, 100);
+    this.camera.position.set(0, 0, 5);
+    this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
-  this.scene.add( new THREE.AmbientLight( 0x4f5359 ) );
-  this.scene.add( new THREE.HemisphereLight( 0xC6C2B6, 0x3A403B, .85 ) );
+    // Lighting
 
-  // Renderer
+    this.scene.add(new THREE.AmbientLight(0x4f5359));
+    this.scene.add(new THREE.HemisphereLight(0xC6C2B6, 0x3A403B, .85));
 
-  this.renderer = new THREE.WebGLRenderer({
-    alpha: true,
-    antialias: true,
-    canvas: canvas
-  });
+    // Renderer
 
-  self.renderer.setSize( window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio );
+    this.renderer = new THREE.WebGLRenderer({
+      alpha:     true,
+      antialias: true,
+      canvas:    canvas
+    });
 
-  var renderSize = throttle(function(){
-    self.renderer.setSize( window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio );
-    self.camera.aspect = (window.innerWidth / window.innerHeight);
-    self.camera.updateProjectionMatrix();
-  }, 200, true);
+    var renderSize = throttle(() => {
+      this.renderer.setSize(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio);
+      this.camera.aspect = (window.innerWidth / window.innerHeight);
+      this.camera.updateProjectionMatrix();
+    }, 200, true);
 
-  renderSize();
+    renderSize();
 
-  // DOM bindings and render loop
+    // DOM bindings and render loop
 
-  window.addEventListener('resize', renderSize);
+    window.addEventListener('resize', renderSize);
 
-  this.started = false;
+    this.started = false;
 
-  this.start = function(){
+    this.start = () => {
 
-    var radpmz = 0;
-    var radpmx = 0;
-    var radpmy = (-2 * (2*π));
+      var radpmz = 0;
+      var radpmx = 0;
+      var radpmy = (-2 * (2 * π));
 
-    var radiz = 0;
-    var radix = 0;
-    var radiy = 0;
+      var radiz = 0;
+      var radix = 0;
+      var radiy = 0;
 
-    self.started = true;
+      this.started = true;
 
-    var render = function () {
-      var now = Date.now();
+      var render = () => {
+        var now = Date.now();
 
-      self.sphere.rotation.set(
-        radix + radpmx * (now % 60e3) / 60e3,
-        radiy + radpmy * (now % 60e3) / 60e3,
-        radiz + radpmz * (now % 60e3) / 60e3
-      );
+        this.sphere.rotation.set(
+          radix + radpmx * (now % 60e3) / 60e3,
+          radiy + radpmy * (now % 60e3) / 60e3,
+          radiz + radpmz * (now % 60e3) / 60e3
+        );
 
-      self.renderer.render(self.scene, self.camera);
+        this.renderer.render(this.scene, this.camera);
 
-      if(self.started){
-        requestAnimationFrame(function(){
-          render.call(this, arguments);
-        });
-      }
+        if (this.started) {
+          requestAnimationFrame(() => {
+            render.call(this, arguments);
+          });
+        }
+
+      };
+
+      render();
 
     };
 
-    render();
-
-  };
-
-}
-
-Renderer.prototype.updateVFC = function(vfc){
-
-  var geometry = new THREE.Geometry();
-
-  each(vfc.vertices, function(vertex){
-    geometry.vertices.push(
-      new THREE.Vector3(vertex.x, vertex.y, vertex.z)
-    );
-  });
-
-  each(vfc.faces, function(face, fi){
-    var triangle = new THREE.Face3(face[0], face[1], face[2]);
-    triangle.vertexColors[0] = new THREE.Color(vfc.colors[face[0]]);
-    triangle.vertexColors[1] = new THREE.Color(vfc.colors[face[1]]);
-    triangle.vertexColors[2] = new THREE.Color(vfc.colors[face[2]]);
-    geometry.faces[fi] = triangle;
-  });
-
-  geometry.computeFaceNormals();
-  geometry.computeVertexNormals();
-
-  this.geometry = geometry;
-
-  if(this.material) this._refreshSphere();
-
-};
-
-Renderer.prototype.updateMaterial = function(opts){
-  var self = this;
-
-  if(this.material && (this.material.wireframe === opts.wireframe)){
-    extend(self.material, pick(opts, constants.MAT_PROPS));
-    this.material.needsUpdate = true;
-  }else{
-    this.material = new THREE[opts.wireframe ? 'MeshLambertMaterial' : 'MeshPhongMaterial' ](extend({
-      shading: THREE.FlatShading,
-      vertexColors: THREE.VertexColors,
-      shininess: 10
-    }, pick(opts, constants.MAT_PROPS)));
   }
 
-  if(this.geometry) this._refreshSphere();
+  updateVFC(vfc) {
 
-};
+    var geometry = new THREE.Geometry();
 
-Renderer.prototype._refreshSphere = function(){
+    each(vfc.vertices, function (vertex) {
+      geometry.vertices.push(
+        new THREE.Vector3(vertex.x, vertex.y, vertex.z)
+      );
+    });
 
-  if(this.sphere) this.scene.remove(this.sphere);
-  this.sphere = new THREE.Mesh( this.geometry, this.material );
-  this.scene.add(this.sphere);
+    each(vfc.faces, function (face, fi) {
+      var triangle             = new THREE.Face3(face[0], face[1], face[2]);
+      triangle.vertexColors[0] = new THREE.Color(vfc.colors[face[0]]);
+      triangle.vertexColors[1] = new THREE.Color(vfc.colors[face[1]]);
+      triangle.vertexColors[2] = new THREE.Color(vfc.colors[face[2]]);
+      geometry.faces[fi]       = triangle;
+    });
 
-};
+    geometry.computeFaceNormals();
+    geometry.computeVertexNormals();
 
-module.exports = Renderer;
+    this.geometry = geometry;
+
+    if (this.material) this._refreshSphere();
+
+  }
+
+  updateMaterial(opts) {
+
+    if (this.material && (this.material.wireframe === opts.wireframe)) {
+      extend(this.material, pick(opts, constants.MAT_PROPS));
+      this.material.needsUpdate = true;
+    } else {
+      this.material = new THREE[opts.wireframe ? 'MeshLambertMaterial' : 'MeshPhongMaterial'](extend({
+        shading:      THREE.FlatShading,
+        vertexColors: THREE.VertexColors,
+        shininess:    10
+      }, pick(opts, constants.MAT_PROPS)));
+    }
+
+    if (this.geometry) this._refreshSphere();
+
+  }
+
+  _refreshSphere () {
+
+    if (this.sphere) this.scene.remove(this.sphere);
+    this.sphere = new THREE.Mesh(this.geometry, this.material);
+    this.scene.add(this.sphere);
+
+  }
+}
+
+export default Renderer;
