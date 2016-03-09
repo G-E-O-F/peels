@@ -1,10 +1,21 @@
 var BABEL_LOADER = "babel?cacheDirectory&presets[]=es2015";
 
+var webpack = require('webpack');
+
 module.exports = {
+  target: "web",
+  cache: false,
+  context: __dirname,
+  devtool: false,
+  plugins: [
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.OccurenceOrderPlugin(),
+    new webpack.optimize.UglifyJsPlugin()
+  ],
   module: {
     loaders: [
       { test: /\.js$/, loaders: [BABEL_LOADER], exclude: /node_modules/},
-      { test: /\.worker\.js$/, loaders: ["worker", BABEL_LOADER] }
+      { test: /\.worker\.js$/, loaders: ["worker?name=sphereworker.js", BABEL_LOADER] }
     ]
   }
 };
