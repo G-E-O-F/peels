@@ -6,8 +6,11 @@
   "scripts": {
     "test": "mocha --compilers js:babel-core/register test/index.js",
     "build:dist": "rm -rf ./www/dist && mkdir ./www/dist && npm run compile:dist:css && npm run compile:dist:js && cp ./www/src/index.html ./www/dist/index.html",
-    "compile:dist:css": "postcss -c ./www/src/postcss.js -o ./www/dist/main.css ./www/src/main.pcss",
-    "compile:dist:js": "webpack --config ./www/src/webpack.js ./www/src/main.js ./www/dist/main.js"
+    "compile:dist:css": "postcss -c ./www/src/postcss.dist.js -o ./www/dist/main.css ./www/src/main.pcss",
+    "compile:dist:js": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.dist.js ./www/src/main.js ./www/dist/main.js",
+    "build": "rm ./www/index.html || true && rm ./www/*.js || true && rm ./www/main.css || true && npm run compile:css && npm run compile:js && cp ./www/src/index.html ./www/index.html",
+    "compile:css": "postcss -c ./www/src/postcss.js -o ./www/main.css ./www/src/main.pcss",
+    "compile:js": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.js ./www/src/main.js ./www/main.js"
   },
   "repository": {
     "type": "git",
