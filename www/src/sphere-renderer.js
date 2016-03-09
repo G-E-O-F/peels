@@ -135,11 +135,11 @@ Renderer.prototype.updateVFC = function(vfc){
 Renderer.prototype.updateMaterial = function(opts){
   var self = this;
 
-  if(this.material){
+  if(this.material && (this.material.wireframe === opts.wireframe)){
     extend(self.material, pick(opts, constants.MAT_PROPS));
     this.material.needsUpdate = true;
   }else{
-    this.material = new THREE.MeshPhongMaterial(extend({
+    this.material = new THREE[opts.wireframe ? 'MeshLambertMaterial' : 'MeshPhongMaterial' ](extend({
       shading: THREE.FlatShading,
       vertexColors: THREE.VertexColors,
       shininess: 10
