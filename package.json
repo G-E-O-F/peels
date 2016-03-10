@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register test/index.js",
-    "build:dist": "rm -rf ./www/dist && mkdir ./www/dist && npm run compile:dist:css && npm run compile:dist:js && cp ./www/src/index.html ./www/dist/index.html",
+    "build:dist": "rm -rf ./www/dist && mkdir ./www/dist && npm run compile:dist:css && npm run compile:dist:js && npm run compile:dist:worker && cp ./www/src/index.html ./www/dist/index.html",
     "compile:dist:css": "postcss -c ./www/src/postcss.dist.js -o ./www/dist/main.css ./www/src/main.pcss",
     "compile:dist:js": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.dist.js ./www/src/main.js ./www/dist/main.js",
-    "build": "rm ./www/index.html || true && rm ./www/*.js || true && rm ./www/main.css || true && npm run compile:css && npm run compile:js && cp ./www/src/index.html ./www/index.html",
+    "compile:dist:worker": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.dist.js ./www/src/sphere-worker.js ./www/dist/sphereworker.js",
+    "build": "rm ./www/index.html || true && rm ./www/*.js || true && rm ./www/main.css || true && npm run compile:css && npm run compile:js && npm run compile:worker && cp ./www/src/index.html ./www/index.html",
     "compile:css": "postcss -c ./www/src/postcss.js -o ./www/main.css ./www/src/main.pcss",
-    "compile:js": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.js ./www/src/main.js ./www/main.js"
+    "compile:js": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.js ./www/src/main.js ./www/main.js",
+    "compile:worker": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.js ./www/src/sphere-worker.js ./www/sphereworker.js"
   },
   "repository": {
     "type": "git",
@@ -54,8 +56,7 @@
     "postcss-simple-vars": "^1.2.0",
     "q": "^1.1.2",
     "three": "^0.74.0",
-    "webpack": "^1.12.14",
-    "worker-loader": "^0.7.0"
+    "webpack": "^1.12.14"
   },
   "dependencies": {
     "async": "^0.9.0"
