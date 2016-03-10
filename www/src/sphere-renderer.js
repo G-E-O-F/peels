@@ -127,6 +127,27 @@ class Renderer {
 
     this.geometry = geometry;
 
+    if(vfc.centroids){
+
+      this.centroidMeshes = [];
+
+      vfc.centroids.forEach( (centroid, c) => {
+
+        this.centroidMeshes[c] = new THREE.Mesh(
+          new THREE.SphereGeometry( .01, 4, 2 ),
+          new THREE.MeshBasicMaterial({ color: '#ffffff' })
+        );
+
+        this.centroidMeshes[c].position.set(
+          centroid.x,
+          centroid.y,
+          centroid.z
+        );
+
+      });
+
+    }
+
     if (this.material) this._refreshSphere();
 
   }
@@ -151,7 +172,12 @@ class Renderer {
   _refreshSphere () {
 
     if (this.sphere) this.scene.remove(this.sphere);
-    this.sphere = new THREE.Mesh(this.geometry, this.material);
+
+    this.sphere = new THREE.Object3D();
+    this.sphere.add(new THREE.Mesh(this.geometry, this.material));
+
+    if(this.centroidMeshes) this.centroidMeshes.forEach((centroidMesh)=>{ this.sphere.add(centroidMesh) });
+
     this.scene.add(this.sphere);
 
   }
