@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Will Shown. All Rights Reserved.
+ * Copyright (c) 2015 Will Shown. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,22 +20,7 @@
  * SOFTWARE.
  */
 
-(function(module){
-
-  var _ = require('underscore');
-
-  module.exports = function(field, color){
-    var Sphere = this,
-        d = Sphere._divisions;
-
-    var n0i = Sphere.linearIndex(field._sxy);
-
-    _.each(Sphere._geometryMap[n0i], function(vi, fi){
-      Sphere._geometry.faces[parseInt(fi)].vertexColors[vi] = color;
-    });
-
-    Sphere._geometry.colorsNeedUpdate = true;
-
-  };
-
-}(module));
+export const divisions = 8;
+export const wireframe = true;
+export const wireframeLinewidth = 1.2;
+export const coloration = 'highlight-icosahedron';
