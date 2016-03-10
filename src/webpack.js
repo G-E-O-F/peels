@@ -14,8 +14,7 @@ module.exports = {
   ],
   module: {
     loaders: [
-      { test: /\.js$/, loaders: [BABEL_LOADER], exclude: /node_modules/},
-      { test: /\.worker\.js$/, loaders: ["worker?name=sphereworker.js", BABEL_LOADER] }
+      { test: /\.js$/, loaders: [BABEL_LOADER], exclude: /node_modules/}
     ]
   }
 };

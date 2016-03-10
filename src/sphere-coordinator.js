@@ -5,8 +5,7 @@ import {extend, pick, debounce} from 'lodash';
 import * as constants from './constants';
 import * as defaults from './defaults';
 
-import    SphereRenderer from './sphere-renderer';
-import SphereWorker from './sphere.worker';
+import SphereRenderer from './sphere-renderer';
 
 class Coordinator {
 
@@ -15,7 +14,7 @@ class Coordinator {
 
     this._canvas = document.querySelector('canvas');
 
-    this._sphereWorker           = new SphereWorker();
+    this._sphereWorker           = new Worker('./sphereworker.js');
     this._sphereWorker.onmessage = this.onMessage.bind(this);
 
     this._sphereRenderer = new SphereRenderer(this._canvas);

@@ -26,7 +26,7 @@ onmessage = function(e){
 
   var opts = e.data || {};
 
-  var s = new Sphere({divisions: opts.divisions});
+  var s = new Sphere(opts);
 
   var colorFn;
 
