@@ -32,9 +32,11 @@ onmessage = function(e){
 
   switch(opts.coloration) {
     case 'highlight-icosahedron':
-      colorFn = function(data, pos, sxy){
+      colorFn = function(){
         var d = this._parent._divisions,
+            sxy = this._sxy,
             onEdge = (
+              this._i < 2 ||
               (sxy[1] + sxy[2] + 1) % d === 0 ||
               (sxy[1] + 1) % d === 0 ||
               sxy[2] === 0
