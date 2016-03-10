@@ -3,6 +3,8 @@
 
 [![Build Status](https://travis-ci.org/G-E-O-F/peels.svg)](https://travis-ci.org/G-E-O-F/peels)
 
+### [Demo](http://g-e-o-f.github.io/peels/)
+
 A configurable spherical geodesic grid data model designed for simulations and visualization.
 
 The literature extolling spherical geodesic grids as data models for simulations of 2½D spherical phenomena like oceanography and climate is enormous (see references below), but the algorithms for those simulations are often written for research-oriented platforms (i.e. in FORTRAN), making accessibility and portability an issue.
