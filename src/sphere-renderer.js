@@ -69,8 +69,8 @@ class Renderer {
 
     this.start = () => {
 
-      var radpmz = 0;
-      var radpmx = 0;
+      var radpmz = (1.4 * (2 * π));
+      var radpmx = (-1 * (2 * π));
       var radpmy = (-2 * (2 * π));
 
       var radiz = 0;
