@@ -104,8 +104,7 @@ class Renderer {
 
   }
 
-  updateVFC(vfc) {
-
+  _useVerticesAndFaces(vfc) {
     var geometry = new THREE.Geometry();
 
     for (let i = 0; i < vfc.vertices.length; i += 3) {
@@ -134,27 +133,66 @@ class Renderer {
     geometry.computeFaceNormals();
     geometry.computeVertexNormals();
 
-    this.geometry = geometry;
+    return geometry;
+  }
 
-    if (vfc.centroids) {
+  _useFieldPolys(vfc, material) {
 
-      this.centroidMeshes = [];
+    var meshes = [];
 
-      for (let i = 0; i < vfc.centroids.length; i += 3) {
-        let c = i / 3;
+    const PENT_FACES = [
+            new THREE.Face3(5, 0, 4),
+            new THREE.Face3(5, 4, 3),
+            new THREE.Face3(5, 3, 2),
+            new THREE.Face3(5, 2, 1),
+            new THREE.Face3(5, 1, 0)
+          ],
+          HEX_FACES  = [
+            new THREE.Face3(6, 0, 5),
+            new THREE.Face3(6, 5, 4),
+            new THREE.Face3(6, 4, 3),
+            new THREE.Face3(6, 3, 2),
+            new THREE.Face3(6, 2, 1),
+            new THREE.Face3(6, 1, 0)
+          ];
 
-        this.centroidMeshes[c] = new THREE.Mesh(
-          new THREE.SphereGeometry(.005, 3, 2),
-          new THREE.MeshBasicMaterial({color: '#ffffff'})
-        );
+    vfc.fieldPolys.forEach((poly, p) => {
 
-        this.centroidMeshes[c].position.set(
-          vfc.centroids[i + 0],
-          vfc.centroids[i + 1],
-          vfc.centroids[i + 2]
+      var geo = new THREE.Geometry();
+
+      for (let i = 0; i < poly.length; i += 3) {
+        geo.vertices[i / 3] = new THREE.Vector3(
+          poly[i + 0],
+          poly[i + 1],
+          poly[i + 2]
         );
       }
 
+      var faces = poly.length / 3 > 6 ? HEX_FACES : PENT_FACES;
+
+      faces.forEach((face, f) => {
+        geo.faces[f] = face;
+      });
+
+      var mat = material.clone();
+
+      if(vfc.colors[p]) mat.color = new THREE.Color(vfc.colors[p]);
+
+      meshes[p] = new THREE.Mesh(geo, mat);
+
+    });
+
+    return meshes;
+
+  }
+
+  updateVFC(vfc) {
+
+    if (vfc.fieldPolys) {
+      this.geometry = 'FIELD_POLYS';
+      this._vfc     = vfc;
+    } else {
+      this.geometry = this._useVerticesAndFaces(vfc);
     }
 
     if (this.material) this._refreshSphere();
@@ -183,11 +221,14 @@ class Renderer {
     if (this.sphere) this.scene.remove(this.sphere);
 
     this.sphere = new THREE.Object3D();
-    this.sphere.add(new THREE.Mesh(this.geometry, this.material));
 
-    if (this.centroidMeshes) this.centroidMeshes.forEach((centroidMesh)=> {
-      this.sphere.add(centroidMesh)
-    });
+    if (this.geometry === 'FIELD_POLYS') {
+      this._useFieldPolys(this._vfc, this.material).forEach((polyMesh) => {
+        this.sphere.add(polyMesh);
+      });
+    } else {
+      this.sphere.add(new THREE.Mesh(this.geometry, this.material));
+    }
 
     this.scene.add(this.sphere);
 
