@@ -136,61 +136,23 @@ class Renderer {
     return geometry;
   }
 
-  _useFieldPolys(vfc, material) {
+  _useFieldPolys(vfc) {
 
-    var meshes = [];
+    var geometry = new THREE.BufferGeometry();
 
-    const PENT_FACES = [
-            new THREE.Face3(5, 0, 4),
-            new THREE.Face3(5, 4, 3),
-            new THREE.Face3(5, 3, 2),
-            new THREE.Face3(5, 2, 1),
-            new THREE.Face3(5, 1, 0)
-          ],
-          HEX_FACES  = [
-            new THREE.Face3(6, 0, 5),
-            new THREE.Face3(6, 5, 4),
-            new THREE.Face3(6, 4, 3),
-            new THREE.Face3(6, 3, 2),
-            new THREE.Face3(6, 2, 1),
-            new THREE.Face3(6, 1, 0)
-          ];
+    geometry.setIndex( new THREE.BufferAttribute( vfc.indices, 1 ) );
+    geometry.addAttribute( 'position', new THREE.BufferAttribute( vfc.positions, 3 ) );
+    geometry.computeVertexNormals();
+    geometry.computeBoundingSphere();
 
-    vfc.fieldPolys.forEach((poly, p) => {
-
-      var geo = new THREE.Geometry();
-
-      for (let i = 0; i < poly.length; i += 3) {
-        geo.vertices[i / 3] = new THREE.Vector3(
-          poly[i + 0],
-          poly[i + 1],
-          poly[i + 2]
-        );
-      }
-
-      var faces = poly.length / 3 > 6 ? HEX_FACES : PENT_FACES;
-
-      faces.forEach((face, f) => {
-        geo.faces[f] = face;
-      });
-
-      var mat = material.clone();
-
-      if(vfc.colors[p]) mat.color = new THREE.Color(vfc.colors[p]);
-
-      meshes[p] = new THREE.Mesh(geo, mat);
-
-    });
-
-    return meshes;
+    return geometry;
 
   }
 
   updateVFC(vfc) {
 
-    if (vfc.fieldPolys) {
-      this.geometry = 'FIELD_POLYS';
-      this._vfc     = vfc;
+    if (vfc.indices) {
+      this.geometry = this._useFieldPolys(vfc);
     } else {
       this.geometry = this._useVerticesAndFaces(vfc);
     }
@@ -206,8 +168,9 @@ class Renderer {
       this.material.needsUpdate = true;
     } else {
       this.material = new THREE[opts.wireframe ? 'MeshLambertMaterial' : 'MeshPhongMaterial'](extend({
+        color: new THREE.Color('#ffffff'),
         shading:      THREE.FlatShading,
-        vertexColors: THREE.VertexColors,
+        // vertexColors: THREE.VertexColors,
         shininess:    10
       }, pick(opts, constants.MAT_PROPS)));
     }
@@ -222,13 +185,7 @@ class Renderer {
 
     this.sphere = new THREE.Object3D();
 
-    if (this.geometry === 'FIELD_POLYS') {
-      this._useFieldPolys(this._vfc, this.material).forEach((polyMesh) => {
-        this.sphere.add(polyMesh);
-      });
-    } else {
-      this.sphere.add(new THREE.Mesh(this.geometry, this.material));
-    }
+    this.sphere.add(new THREE.Mesh(this.geometry, this.material));
 
     this.scene.add(this.sphere);
 
