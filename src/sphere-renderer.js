@@ -37,7 +37,7 @@ class Renderer {
     this.scene.fog = new THREE.Fog(0x000000, 4.5, 6.5);
 
     this.camera = new THREE.PerspectiveCamera(33, window.innerWidth / window.innerHeight, 0.1, 100);
-    this.camera.position.set(0, 0, 5);
+    this.camera.position.set(0, 0, 4.5);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     // Lighting
@@ -108,43 +108,52 @@ class Renderer {
 
     var geometry = new THREE.Geometry();
 
-    each(vfc.vertices, function (vertex) {
+    for (let i = 0; i < vfc.vertices.length; i += 3) {
       geometry.vertices.push(
-        new THREE.Vector3(vertex.x, vertex.y, vertex.z)
+        new THREE.Vector3(
+          vfc.vertices[i + 0],
+          vfc.vertices[i + 1],
+          vfc.vertices[i + 2]
+        )
       );
-    });
+    }
 
-    each(vfc.faces, function (face, fi) {
-      var triangle             = new THREE.Face3(face[0], face[1], face[2]);
-      triangle.vertexColors[0] = new THREE.Color(vfc.colors[face[0]]);
-      triangle.vertexColors[1] = new THREE.Color(vfc.colors[face[1]]);
-      triangle.vertexColors[2] = new THREE.Color(vfc.colors[face[2]]);
-      geometry.faces[fi]       = triangle;
-    });
+    for (let i = 0; i < vfc.faces.length; i += 3) {
+      let triangle = new THREE.Face3(
+        vfc.faces[i + 0],
+        vfc.faces[i + 1],
+        vfc.faces[i + 2]
+      );
+
+      triangle.vertexColors[0] = new THREE.Color(vfc.colors[vfc.faces[i + 0]]);
+      triangle.vertexColors[1] = new THREE.Color(vfc.colors[vfc.faces[i + 1]]);
+      triangle.vertexColors[2] = new THREE.Color(vfc.colors[vfc.faces[i + 2]]);
+      geometry.faces[i / 3]    = triangle;
+    }
 
     geometry.computeFaceNormals();
     geometry.computeVertexNormals();
 
     this.geometry = geometry;
 
-    if(vfc.centroids){
+    if (vfc.centroids) {
 
       this.centroidMeshes = [];
 
-      vfc.centroids.forEach( (centroid, c) => {
+      for (let i = 0; i < vfc.centroids.length; i += 3) {
+        let c = i / 3;
 
         this.centroidMeshes[c] = new THREE.Mesh(
-          new THREE.SphereGeometry( .01, 4, 2 ),
-          new THREE.MeshBasicMaterial({ color: '#ffffff' })
+          new THREE.SphereGeometry(.005, 3, 2),
+          new THREE.MeshBasicMaterial({color: '#ffffff'})
         );
 
         this.centroidMeshes[c].position.set(
-          centroid.x,
-          centroid.y,
-          centroid.z
+          vfc.centroids[i + 0],
+          vfc.centroids[i + 1],
+          vfc.centroids[i + 2]
         );
-
-      });
+      }
 
     }
 
@@ -169,14 +178,16 @@ class Renderer {
 
   }
 
-  _refreshSphere () {
+  _refreshSphere() {
 
     if (this.sphere) this.scene.remove(this.sphere);
 
     this.sphere = new THREE.Object3D();
     this.sphere.add(new THREE.Mesh(this.geometry, this.material));
 
-    if(this.centroidMeshes) this.centroidMeshes.forEach((centroidMesh)=>{ this.sphere.add(centroidMesh) });
+    if (this.centroidMeshes) this.centroidMeshes.forEach((centroidMesh)=> {
+      this.sphere.add(centroidMesh)
+    });
 
     this.scene.add(this.sphere);
 
