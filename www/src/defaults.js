@@ -24,3 +24,4 @@ export const divisions = 8;
 export const wireframe = false;
 export const wireframeLinewidth = 1.2;
 export const coloration = 'highlight-icosahedron';
+export const geometryType = 'poly-per-field';

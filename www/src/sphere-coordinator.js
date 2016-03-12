@@ -40,6 +40,12 @@ class Coordinator {
       .step(1)
       .onChange(this._onGeometryChange.bind(this));
 
+    this._gui.add(this, 'geometryType', [
+      'poly-per-field',
+      'vertex-per-field'
+    ])
+      .onChange(this._onGeometryChange.bind(this));
+
     this._gui.add(this, 'wireframe')
       .onChange(this._onMaterialChange.bind(this));
 
