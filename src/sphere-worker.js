@@ -55,7 +55,7 @@ onmessage = function(e){
       break;
   }
 
-  s.toCG({ colorFn: colorFn, type: 'fields' }, function(err, vfc){
+  s.toCG({ colorFn: colorFn, type: (opts.geometryType || 'fields') }, function(err, vfc){
     postMessage(vfc);
   });
 
