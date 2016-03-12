@@ -104,39 +104,7 @@ class Renderer {
 
   }
 
-  _useVerticesAndFaces(vfc) {
-    var geometry = new THREE.Geometry();
-
-    for (let i = 0; i < vfc.vertices.length; i += 3) {
-      geometry.vertices.push(
-        new THREE.Vector3(
-          vfc.vertices[i + 0],
-          vfc.vertices[i + 1],
-          vfc.vertices[i + 2]
-        )
-      );
-    }
-
-    for (let i = 0; i < vfc.faces.length; i += 3) {
-      let triangle = new THREE.Face3(
-        vfc.faces[i + 0],
-        vfc.faces[i + 1],
-        vfc.faces[i + 2]
-      );
-
-      triangle.vertexColors[0] = new THREE.Color(vfc.colors[vfc.faces[i + 0]]);
-      triangle.vertexColors[1] = new THREE.Color(vfc.colors[vfc.faces[i + 1]]);
-      triangle.vertexColors[2] = new THREE.Color(vfc.colors[vfc.faces[i + 2]]);
-      geometry.faces[i / 3]    = triangle;
-    }
-
-    geometry.computeFaceNormals();
-    geometry.computeVertexNormals();
-
-    return geometry;
-  }
-
-  _useFieldPolys(vfc) {
+  updateVFC(vfc) {
 
     var geometry = new THREE.BufferGeometry();
 
@@ -145,17 +113,7 @@ class Renderer {
     geometry.computeVertexNormals();
     geometry.computeBoundingSphere();
 
-    return geometry;
-
-  }
-
-  updateVFC(vfc) {
-
-    if (vfc.indices) {
-      this.geometry = this._useFieldPolys(vfc);
-    } else {
-      this.geometry = this._useVerticesAndFaces(vfc);
-    }
+    this.geometry = geometry;
 
     if (this.material) this._refreshSphere();
 
