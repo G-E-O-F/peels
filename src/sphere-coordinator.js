@@ -22,7 +22,7 @@ class Coordinator {
 
     this._setUpGUI();
 
-    this._sphereRenderer.updateMaterial(pick(this, constants.MAT_PROPS));
+    this._sphereRenderer.updateMaterial(this);
     this._sphereWorker.postMessage(pick(this, constants.GEO_PROPS));
   }
 
@@ -45,7 +45,10 @@ class Coordinator {
       'poly-per-field',
       'vertex-per-field'
     ])
-      .onChange(this._onGeometryChange.bind(this));
+      .onChange(()=>{
+        this._onMaterialChange();
+        this._onGeometryChange();
+      });
 
     this._gui.add(this, 'wireframe')
       .onChange(this._onMaterialChange.bind(this));
@@ -60,7 +63,7 @@ class Coordinator {
   }
 
   _onMaterialChange() {
-    this._sphereRenderer.updateMaterial(pick(this, constants.MAT_PROPS));
+    this._sphereRenderer.updateMaterial(this);
   }
 
 }

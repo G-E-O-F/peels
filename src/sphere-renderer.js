@@ -84,8 +84,8 @@ class Renderer {
 
     this._world.addEventListener('preStep', ()=> {
       this._body.angularVelocity.y = DEFAULT_ω;
-      this._body.angularVelocity.x = DEFAULT_ω / 3;
-      this._body.angularVelocity.z = DEFAULT_ω / 5;
+      this._body.angularVelocity.x = DEFAULT_ω / 2;
+      this._body.angularVelocity.z = DEFAULT_ω / 3;
     });
 
     // DOM bindings and render loop
@@ -125,8 +125,9 @@ class Renderer {
 
     geometry.setIndex(new THREE.BufferAttribute(vfc.indices, 1));
     geometry.addAttribute('position', new THREE.BufferAttribute(vfc.positions, 3));
+    geometry.addAttribute('normal', new THREE.BufferAttribute(vfc.normals, 3));
     geometry.addAttribute('color', new THREE.BufferAttribute(vfc.colors, 3));
-    geometry.computeVertexNormals();
+
     geometry.computeBoundingSphere();
 
     this.geometry = geometry;
@@ -137,16 +138,11 @@ class Renderer {
 
   updateMaterial(opts) {
 
-    if (this.material && (this.material.wireframe === opts.wireframe)) {
-      extend(this.material, pick(opts, constants.MAT_PROPS));
-      this.material.needsUpdate = true;
-    } else {
-      this.material = new THREE[opts.wireframe ? 'MeshLambertMaterial' : 'MeshPhongMaterial'](extend({
-        shading:      THREE.FlatShading,
-        vertexColors: THREE.VertexColors,
-        shininess:    20
-      }, pick(opts, constants.MAT_PROPS)));
-    }
+    this.material = new THREE[opts.wireframe ? 'MeshLambertMaterial' : 'MeshPhongMaterial'](extend({
+      shading:      opts.geometryType === 'vertex-per-field' ? THREE.FlatShading : THREE.SmoothShading,
+      vertexColors: THREE.VertexColors,
+      shininess:    80
+    }, pick(opts, constants.MAT_PROPS)));
 
     if (this.geometry) this._refreshSphere();
 
