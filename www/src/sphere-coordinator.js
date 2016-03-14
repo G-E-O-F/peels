@@ -28,7 +28,7 @@ class Coordinator {
 
   onMessage(e) {
     this._sphereRenderer.updateVFC(e.data);
-    if (!this._sphereRenderer.started) this._sphereRenderer.start();
+    if (this._sphereRenderer.paused) this._sphereRenderer.play();
     this._canvas.classList.add('ready');
   }
 
