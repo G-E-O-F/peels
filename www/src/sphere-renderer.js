@@ -108,8 +108,9 @@ class Renderer {
 
     var geometry = new THREE.BufferGeometry();
 
-    geometry.setIndex( new THREE.BufferAttribute( vfc.indices, 1 ) );
-    geometry.addAttribute( 'position', new THREE.BufferAttribute( vfc.positions, 3 ) );
+    geometry.setIndex(new THREE.BufferAttribute(vfc.indices, 1));
+    geometry.addAttribute('position', new THREE.BufferAttribute(vfc.positions, 3));
+    geometry.addAttribute('color', new THREE.BufferAttribute(vfc.colors, 3));
     geometry.computeVertexNormals();
     geometry.computeBoundingSphere();
 
@@ -126,10 +127,9 @@ class Renderer {
       this.material.needsUpdate = true;
     } else {
       this.material = new THREE[opts.wireframe ? 'MeshLambertMaterial' : 'MeshPhongMaterial'](extend({
-        color: new THREE.Color('#ffffff'),
         shading:      THREE.FlatShading,
-        // vertexColors: THREE.VertexColors,
-        shininess:    10
+        vertexColors: THREE.VertexColors,
+        shininess:    20
       }, pick(opts, constants.MAT_PROPS)));
     }
 

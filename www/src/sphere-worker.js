@@ -22,38 +22,15 @@
 
 import Sphere from '../../index.js';
 
+import * as colorFns from './color-functions';
+
 onmessage = function(e){
 
   var opts = e.data || {};
 
   var s = new Sphere(opts);
 
-  var colorFn;
-
-  switch(opts.coloration) {
-    case 'highlight-icosahedron':
-      colorFn = function(){
-        var d = this._parent._divisions,
-            sxy = this._sxy,
-            onEdge = (
-              this._i < 2 ||
-              (sxy[1] + sxy[2] + 1) % d === 0 ||
-              (sxy[1] + 1) % d === 0 ||
-              sxy[2] === 0
-            );
-        if( onEdge ){
-          return '#C6C2B6'
-        }else{
-          return '#4D646C'
-        }
-      };
-      break;
-    default:
-      colorFn = function(){
-        return '#C6C2B6';
-      };
-      break;
-  }
+  var colorFn = colorFns[opts.coloration] ? colorFns[opts.coloration] : colorFns.default;
 
   s.toCG({ colorFn: colorFn, type: (opts.geometryType || 'fields') }, function(err, vfc){
     postMessage(vfc);

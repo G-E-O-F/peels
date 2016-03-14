@@ -6,6 +6,7 @@ import * as constants from './constants';
 import * as defaults from './defaults';
 
 import SphereRenderer from './sphere-renderer';
+import * as colorFns from './color-functions';
 
 class Coordinator {
 
@@ -54,10 +55,7 @@ class Coordinator {
       .max(4)
       .onChange(this._onMaterialChange.bind(this));
 
-    this._gui.add(this, 'coloration', [
-        'highlight-icosahedron',
-        'default'
-      ])
+    this._gui.add(this, 'coloration', Object.keys(colorFns))
       .onChange(this._onGeometryChange.bind(this))
   }
 
