@@ -21,15 +21,21 @@
  */
 
 import THREE from 'three';
+import CANNON from 'cannon';
 
 import { throttle, each, extend, pick } from 'lodash';
 
-const π         = Math.PI,
-      constants = require('./constants');
+const constants = require('./constants');
+
+const TIME_STEP     = 1.0 / 60.0,
+      MAX_SUB_STEPS = 3,
+      DEFAULT_ω     = -.05;
 
 class Renderer {
 
   constructor(canvas) {
+
+    this._lastTime = Date.now();
 
     // Camera & Scene
 
@@ -37,7 +43,7 @@ class Renderer {
     this.scene.fog = new THREE.Fog(0x000000, 4.5, 6.5);
 
     this.camera = new THREE.PerspectiveCamera(33, window.innerWidth / window.innerHeight, 0.1, 100);
-    this.camera.position.set(0, 0, 5);
+    this.camera.position.set(0, 0, 4.5);
     this.camera.lookAt(new THREE.Vector3(0, 0, 0));
 
     // Lighting
@@ -61,69 +67,68 @@ class Renderer {
 
     renderSize();
 
+    // Physics
+
+    this._world = new CANNON.World();
+
+    // The volume and mass of a human head
+    this._body = new CANNON.Body({
+      mass:     5,
+      position: new CANNON.Vec3(0, 0, 0),
+      shape:    new CANNON.Sphere(0.0875)
+    });
+
+    this._body.angularDamping = .88;
+
+    this._world.addBody(this._body);
+
+    this._world.addEventListener('preStep', ()=> {
+      this._body.angularVelocity.y = DEFAULT_ω;
+      this._body.angularVelocity.x = DEFAULT_ω / 2;
+      this._body.angularVelocity.z = DEFAULT_ω / 3;
+    });
+
     // DOM bindings and render loop
 
     window.addEventListener('resize', renderSize);
 
-    this.started = false;
+    this.paused = true;
+    this.render = this._render.bind(this);
 
-    this.start = () => {
+  }
 
-      var radpmz = 0;
-      var radpmx = 0;
-      var radpmy = (-2 * (2 * π));
+  play() {
+    this.paused = false;
+    this.render();
+  }
 
-      var radiz = 0;
-      var radix = 0;
-      var radiy = 0;
+  pause() {
+    this.paused = true;
+  }
 
-      this.started = true;
+  _render() {
+    var now = Date.now(),
+        dt  = (now - this._lastTime) / 1e3;
 
-      var render = () => {
-        var now = Date.now();
+    this.sphere.rotation.setFromQuaternion(this._body.quaternion);
 
-        this.sphere.rotation.set(
-          radix + radpmx * (now % 60e3) / 60e3,
-          radiy + radpmy * (now % 60e3) / 60e3,
-          radiz + radpmz * (now % 60e3) / 60e3
-        );
+    this._world.step(TIME_STEP, dt, MAX_SUB_STEPS);
 
-        this.renderer.render(this.scene, this.camera);
+    this.renderer.render(this.scene, this.camera);
 
-        if (this.started) {
-          requestAnimationFrame(() => {
-            render.call(this, arguments);
-          });
-        }
-
-      };
-
-      render();
-
-    };
-
+    if (!this.paused) requestAnimationFrame(this.render);
   }
 
   updateVFC(vfc) {
 
-    var geometry = new THREE.Geometry();
+    var geometry = new THREE.BufferGeometry();
 
-    each(vfc.vertices, function (vertex) {
-      geometry.vertices.push(
-        new THREE.Vector3(vertex.x, vertex.y, vertex.z)
-      );
-    });
+    geometry.setIndex(new THREE.BufferAttribute(vfc.indices, 1));
+    geometry.addAttribute('position', new THREE.BufferAttribute(vfc.positions, 3));
+    geometry.addAttribute('normal', new THREE.BufferAttribute(vfc.normals, 3));
+    geometry.addAttribute('color', new THREE.BufferAttribute(vfc.colors, 3));
 
-    each(vfc.faces, function (face, fi) {
-      var triangle             = new THREE.Face3(face[0], face[1], face[2]);
-      triangle.vertexColors[0] = new THREE.Color(vfc.colors[face[0]]);
-      triangle.vertexColors[1] = new THREE.Color(vfc.colors[face[1]]);
-      triangle.vertexColors[2] = new THREE.Color(vfc.colors[face[2]]);
-      geometry.faces[fi]       = triangle;
-    });
-
-    geometry.computeFaceNormals();
-    geometry.computeVertexNormals();
+    geometry.computeBoundingSphere();
 
     this.geometry = geometry;
 
@@ -133,25 +138,24 @@ class Renderer {
 
   updateMaterial(opts) {
 
-    if (this.material && (this.material.wireframe === opts.wireframe)) {
-      extend(this.material, pick(opts, constants.MAT_PROPS));
-      this.material.needsUpdate = true;
-    } else {
-      this.material = new THREE[opts.wireframe ? 'MeshLambertMaterial' : 'MeshPhongMaterial'](extend({
-        shading:      THREE.FlatShading,
-        vertexColors: THREE.VertexColors,
-        shininess:    10
-      }, pick(opts, constants.MAT_PROPS)));
-    }
+    this.material = new THREE[opts.wireframe ? 'MeshLambertMaterial' : 'MeshPhongMaterial'](extend({
+      shading:      opts.geometryType === 'vertex-per-field' ? THREE.FlatShading : THREE.SmoothShading,
+      vertexColors: THREE.VertexColors,
+      shininess:    80
+    }, pick(opts, constants.MAT_PROPS)));
 
     if (this.geometry) this._refreshSphere();
 
   }
 
-  _refreshSphere () {
+  _refreshSphere() {
 
     if (this.sphere) this.scene.remove(this.sphere);
-    this.sphere = new THREE.Mesh(this.geometry, this.material);
+
+    this.sphere = new THREE.Object3D();
+
+    this.sphere.add(new THREE.Mesh(this.geometry, this.material));
+
     this.scene.add(this.sphere);
 
   }

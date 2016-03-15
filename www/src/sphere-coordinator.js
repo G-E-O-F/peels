@@ -6,6 +6,7 @@ import * as constants from './constants';
 import * as defaults from './defaults';
 
 import SphereRenderer from './sphere-renderer';
+import * as colorFns from './color-functions';
 
 class Coordinator {
 
@@ -21,13 +22,13 @@ class Coordinator {
 
     this._setUpGUI();
 
-    this._sphereRenderer.updateMaterial(pick(this, constants.MAT_PROPS));
+    this._sphereRenderer.updateMaterial(this);
     this._sphereWorker.postMessage(pick(this, constants.GEO_PROPS));
   }
 
   onMessage(e) {
     this._sphereRenderer.updateVFC(e.data);
-    if (!this._sphereRenderer.started) this._sphereRenderer.start();
+    if (this._sphereRenderer.paused) this._sphereRenderer.play();
     this._canvas.classList.add('ready');
   }
 
@@ -40,6 +41,15 @@ class Coordinator {
       .step(1)
       .onChange(this._onGeometryChange.bind(this));
 
+    this._gui.add(this, 'geometryType', [
+      'poly-per-field',
+      'vertex-per-field'
+    ])
+      .onChange(()=>{
+        this._onMaterialChange();
+        this._onGeometryChange();
+      });
+
     this._gui.add(this, 'wireframe')
       .onChange(this._onMaterialChange.bind(this));
 
@@ -48,15 +58,12 @@ class Coordinator {
       .max(4)
       .onChange(this._onMaterialChange.bind(this));
 
-    this._gui.add(this, 'coloration', [
-        'highlight-icosahedron',
-        'default'
-      ])
+    this._gui.add(this, 'coloration', Object.keys(colorFns))
       .onChange(this._onGeometryChange.bind(this))
   }
 
   _onMaterialChange() {
-    this._sphereRenderer.updateMaterial(pick(this, constants.MAT_PROPS));
+    this._sphereRenderer.updateMaterial(this);
   }
 
 }
