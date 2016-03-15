@@ -12,7 +12,8 @@
     "build": "rm ./www/index.html || true && rm ./www/*.js || true && rm ./www/main.css || true && npm run compile:css && npm run compile:js && npm run compile:worker && cp ./www/src/index.html ./www/index.html",
     "compile:css": "postcss -c ./www/src/postcss.js -o ./www/main.css ./www/src/main.pcss",
     "compile:js": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.js ./www/src/main.js ./www/main.js",
-    "compile:worker": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.js ./www/src/sphere-worker.js ./www/sphereworker.js"
+    "compile:worker": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.js ./www/src/sphere-worker.js ./www/sphereworker.js",
+    "deploy:www": "git subtree push --prefix www origin gh-pages"
   },
   "repository": {
     "type": "git",
