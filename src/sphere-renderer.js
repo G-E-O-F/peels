@@ -29,7 +29,10 @@ const constants = require('./constants');
 
 const TIME_STEP     = 1.0 / 60.0,
       MAX_SUB_STEPS = 3,
-      DEFAULT_ω     = -.05;
+      DEFAULT_ω     = -.09,
+      OSC_DUR       = 30e3;
+
+const τ = 2 * Math.PI;
 
 class Renderer {
 
@@ -83,9 +86,11 @@ class Renderer {
     this._world.addBody(this._body);
 
     this._world.addEventListener('preStep', ()=> {
-      this._body.angularVelocity.y = DEFAULT_ω;
-      this._body.angularVelocity.x = DEFAULT_ω / 2;
-      this._body.angularVelocity.z = DEFAULT_ω / 3;
+      var t = this._lastTime;
+
+      this._body.angularVelocity.y = Math.sin(τ * ((t + OSC_DUR / 2.5) % (OSC_DUR*2)) / (OSC_DUR*2)) * 2 * DEFAULT_ω;
+      this._body.angularVelocity.x = Math.sin(τ * (t % OSC_DUR) / OSC_DUR) * DEFAULT_ω;
+      this._body.angularVelocity.z = Math.sin(τ * ((t + OSC_DUR / 2) % OSC_DUR) / OSC_DUR) * DEFAULT_ω;
     });
 
     // DOM bindings and render loop
@@ -117,6 +122,8 @@ class Renderer {
     this.renderer.render(this.scene, this.camera);
 
     if (!this.paused) requestAnimationFrame(this.render);
+
+    this._lastTime = now;
   }
 
   updateVFC(vfc) {
