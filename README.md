@@ -46,10 +46,6 @@ The data must be the product of `Sphere.serialize()`.
 
 ### `Sphere` Instance Methods
 
-#### `sphere.linearIndex(sxy)`
-
-Given an array of internal coordinates `[s,x,y]` for a field, returns the index of that field if all fields were arranged in a flat, gapless array.
-
 #### `sphere.iterate(perField, done)`
 
 Takes two functions: `perField`, and `done`.
@@ -76,36 +72,7 @@ During iteration, every field’s `data` property is only affected after the ite
 
 Meant to be used in conjunction with [ThreeJS](http://threejs.org/).
 
-Returns an object with the keys `vertices` and `faces` populated by cartesian coordinates and indices required to visualize the model with ThreeJS. Also returns an additional key `colors` if `options` has a `colorFn` function specified.
-
-e.g.:
-
-```javascript
-var vfc = planet.toCG(opts);
-
-var geometry = new THREE.Geometry();
-
-_.each(vfc.vertices, function(vertex){
-  geometry.vertices.push(
-    new THREE.Vector3(vertex.x, vertex.y, vertex.z)
-  );
-});
-
-_.each(vfc.faces, function(face, fi){
-  var triangle = new THREE.Face3(face[0], face[1], face[2]);
-  triangle.vertexColors[0] = vfc.colors[face[0]];
-  triangle.vertexColors[1] = vfc.colors[face[1]];
-  triangle.vertexColors[2] = vfc.colors[face[2]];
-  geometry.faces[fi] = triangle;
-});
-
-geometry.computeFaceNormals();
-geometry.computeVertexNormals();
-```
-
-#### `sphere.bindGeometry(geometry, colorFn)`
-
-A convenience function that takes the geometry reference created by ThreeJS and optionally a `colorFn` function and adds them as properties to the sphere model as `this._geometry` and `this._colorFn` respectively so that either can be used during iteration.
+Returns an object with typed arrays suitable for use in ThreeJS’s `BufferGeometry`.
 
 ### `Field` properties
 
@@ -115,7 +82,7 @@ The data stored to this field. It can be anything.
 
 If this is accessed while iterating over all fields in the sphere, `this.data` is the field’s data from the beginning of the iteration. Once iterating over all fields is finished, `this.data` is updated to the new value, if a new value was set.
 
-#### `field._Sphere`
+#### `field._parent`
 
 A reference to the field’s parent sphere model.
 
@@ -127,7 +94,7 @@ Returns a reference to a field adjacent to this one at index `i`. Twelve fields 
 
 Returns an array of the fields adjacent to this one. The length of the array will be either 5 or 6.
 
-#### `field._pos`
+#### `field.position`
 
 An object with spherical latitude/longitude coordinates of the field's barycenter in the style used to navigate Earth **in radians**. The key `λ` is latitude (from 0 to 2π), and the key `φ` is longitude (between π/2 and -π/2, positive is north and negative is south), e.g. a field centered on Seattle would be near:
 
@@ -139,6 +106,12 @@ An object with spherical latitude/longitude coordinates of the field's barycente
 ```
 
 This property is set during the sphere’s construction and shouldn’t be modified.
+
+## Demo image credits
+
+All images used in the demo are public domain.
+
+`earth.jpeg` is from [http://visibleearth.nasa.gov/](http://visibleearth.nasa.gov/view.php?id=73701)
 
 ## References
 
