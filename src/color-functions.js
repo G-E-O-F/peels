@@ -35,3 +35,13 @@ export const highlightIcosahedron = function(){
   }
 
 };
+
+export const useRGB = function(){
+
+  return {
+    r: toF * this.data.r,
+    g: toF * this.data.g,
+    b: toF * this.data.b
+  }
+
+};

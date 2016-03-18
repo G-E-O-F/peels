@@ -8,6 +8,8 @@ import * as defaults from './defaults';
 import SphereRenderer from './sphere-renderer';
 import * as colorFns from './color-functions';
 
+import loadImgData from './load-img-data';
+
 class Coordinator {
 
   constructor() {
@@ -23,7 +25,11 @@ class Coordinator {
     this._setUpGUI();
 
     this._sphereRenderer.updateMaterial(this);
-    this._sphereWorker.postMessage(pick(this, constants.GEO_PROPS));
+
+    this._img = {};
+
+    this._sphereWorker.postMessage(extend({}, this._img, pick(this, constants.GEO_PROPS)));
+
   }
 
   onMessage(e) {
@@ -59,18 +65,34 @@ class Coordinator {
       .onChange(this._onMaterialChange.bind(this));
 
     this._gui.add(this, 'coloration', Object.keys(colorFns))
-      .onChange(this._onGeometryChange.bind(this))
+      .onChange(this._onGeometryChange.bind(this));
+
+    this._gui.add(this, 'useRGBAsset', [
+      'earth.jpeg'
+    ]).onChange(this._onImageChange.bind(this));
   }
 
   _onMaterialChange() {
     this._sphereRenderer.updateMaterial(this);
   }
 
+  _onImageChange(){
+    this._img = {};
+    loadImgData('assets/' + this.useRGBAsset, (img)=>{
+      this._img = img;
+      this._onGeometryChange();
+    });
+  }
+
 }
 
 Coordinator.prototype._onGeometryChange = debounce(function () {
-  this._canvas.classList.remove('ready');
-  this._sphereWorker.postMessage(pick(this, constants.GEO_PROPS));
+  if(this.coloration === 'useRGB' && !this._img.imageData){
+    this._onImageChange();
+  }else{
+    this._canvas.classList.remove('ready');
+    this._sphereWorker.postMessage(extend({}, this._img, pick(this, constants.GEO_PROPS)));
+  }
 }, 200);
 
 export default Coordinator;
