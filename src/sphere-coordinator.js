@@ -68,7 +68,9 @@ class Coordinator {
       .onChange(this._onGeometryChange.bind(this));
 
     this._gui.add(this, 'useRGBAsset', [
-      'earth.jpeg'
+      'earth.jpeg',
+      'moon.jpeg',
+      'jupiter.jpeg'
     ]).onChange(this._onImageChange.bind(this));
   }
 
