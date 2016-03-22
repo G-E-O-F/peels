@@ -9,7 +9,7 @@
     "compile:dist:css": "postcss -c ./www/src/postcss.dist.js -o ./www/dist/main.css ./www/src/main.pcss",
     "compile:dist:js": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.dist.js ./www/src/main.js ./www/dist/main.js",
     "compile:dist:worker": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.dist.js ./www/src/sphere-worker.js ./www/dist/sphereworker.js",
-    "build": "rm ./www/index.html || true && rm ./www/*.js || true && rm ./www/main.css || true && npm run compile:css && npm run compile:js && npm run compile:worker && cp ./www/src/index.html ./www/index.html && ln -s ./src/assets ./www",
+    "build": "rm ./www/index.html || true && rm ./www/*.js || true && rm ./www/main.css || true && npm run compile:css && npm run compile:js && npm run compile:worker && cp ./www/src/index.html ./www/index.html && ln -s ./src/assets ./www || true",
     "compile:css": "postcss -c ./www/src/postcss.js -o ./www/main.css ./www/src/main.pcss",
     "compile:js": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.js ./www/src/main.js ./www/main.js",
     "compile:worker": "webpack --verbose --colors --display-error-details --config ./www/src/webpack.js ./www/src/sphere-worker.js ./www/sphereworker.js",
