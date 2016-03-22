@@ -24,6 +24,10 @@ import Sphere from '../../index.js';
 
 import * as colorFns from './color-functions';
 
+function _clamp(RGBval){
+  return Math.max(Math.min(RGBval, 255), 0)
+}
+
 onmessage = function(e){
 
   var opts = e.data || {};
@@ -32,8 +36,30 @@ onmessage = function(e){
 
   var colorFn = colorFns[opts.coloration] ? colorFns[opts.coloration] : colorFns.default;
 
-  s.toCG({ colorFn: colorFn, type: (opts.geometryType || 'fields') }, function(err, vfc){
-    postMessage(vfc);
-  });
+  if(opts.coloration === 'useRGB' && opts.imageData){
+
+    s.fromRaster(opts.imageData, opts.imageWidth, opts.imageHeight, 4, function(r, g, b){
+
+      this.data = {
+        r: _clamp(r),
+        g: _clamp(g),
+        b: _clamp(b)
+      };
+
+    }, function(){
+
+      s.toCG({ colorFn: colorFn, type: (opts.geometryType || 'fields') }, function(err, vfc){
+        postMessage(vfc);
+      });
+
+    });
+
+  }else{
+
+    s.toCG({ colorFn: colorFn, type: (opts.geometryType || 'fields') }, function(err, vfc){
+      postMessage(vfc);
+    });
+
+  }
 
 };
