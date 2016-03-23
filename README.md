@@ -111,9 +111,9 @@ This property is set during the sphere’s construction and shouldn’t be modif
 
 All images used in the demo are public domain.
 
-`earth.jpeg` is from [visibleearth.nasa.gov](http://visibleearth.nasa.gov/view.php?id=73701)
-`moon.jpeg` is from [onmoon.jpl.nasa.gov](http://onmoon.jpl.nasa.gov/)
-`jupiter.jpeg` is from [svs.gsfc.nasa.gov](http://svs.gsfc.nasa.gov/cgi-bin/details.cgi?aid=12021)
+- `earth.jpeg` is from [visibleearth.nasa.gov](http://visibleearth.nasa.gov/view.php?id=73701)
+- `moon.jpeg` is from [onmoon.jpl.nasa.gov](http://onmoon.jpl.nasa.gov/)
+- `jupiter.jpeg` is from [svs.gsfc.nasa.gov](http://svs.gsfc.nasa.gov/cgi-bin/details.cgi?aid=12021)
 
 ## References
 
