@@ -59,8 +59,8 @@ e.g.:
 ```javascript
 planet.iterate(function(done){
   this.data = {
-    temperature: getTemp(this._pos),
-    pressure: getPressure(this._pos)
+    temperature: getTemp(this.position),
+    pressure: getPressure(this.position)
   };
   done();
 }, d.resolve);
