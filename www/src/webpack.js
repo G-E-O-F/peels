@@ -14,7 +14,8 @@ module.exports = {
   ],
   module: {
     loaders: [
-      { test: /\.js$/, loaders: [BABEL_LOADER], exclude: /node_modules/}
+      { test: /\.js$/, loaders: [BABEL_LOADER], exclude: /node_modules/},
+      { test: /node_modules\/geof-util\/.*\.js$/, loaders: [BABEL_LOADER]}
     ]
   }
 };

@@ -51,30 +51,30 @@ describe('Sphere', function () {
     describe('adjacent field linking', function () {
 
       it('should connect the north pole’s adjacent fields.', function () {
-        return z.get('NORTH')._adjacentFields.length.should.equal(5) &&
-          z.get('NORTH').adjacent(0).should.equal(z.get(0, 0, 0)) &&
-          z.get('NORTH').adjacent(1).should.equal(z.get(1, 0, 0)) &&
-          z.get('NORTH').adjacent(2).should.equal(z.get(2, 0, 0)) &&
-          z.get('NORTH').adjacent(3).should.equal(z.get(3, 0, 0)) &&
-          z.get('NORTH').adjacent(4).should.equal(z.get(4, 0, 0));
+        return z._NORTH._adjacentFields.length.should.equal(5) &&
+          z._NORTH.adjacent(0).should.equal(z.get(0, 0, 0)) &&
+          z._NORTH.adjacent(1).should.equal(z.get(1, 0, 0)) &&
+          z._NORTH.adjacent(2).should.equal(z.get(2, 0, 0)) &&
+          z._NORTH.adjacent(3).should.equal(z.get(3, 0, 0)) &&
+          z._NORTH.adjacent(4).should.equal(z.get(4, 0, 0));
       });
 
       it('should connect the south pole’s adjacent fields.', function () {
         var dy = z._divisions,
             dx = dy * 2;
         return dy.should.equal(3) && dx.should.equal(6) &&
-          z.get('SOUTH')._adjacentFields.length.should.equal(5) &&
-          z.get('SOUTH').adjacent(0).should.equal(z.get(0, dx - 1, dy - 1)) &&
-          z.get('SOUTH').adjacent(1).should.equal(z.get(1, dx - 1, dy - 1)) &&
-          z.get('SOUTH').adjacent(2).should.equal(z.get(2, dx - 1, dy - 1)) &&
-          z.get('SOUTH').adjacent(3).should.equal(z.get(3, dx - 1, dy - 1)) &&
-          z.get('SOUTH').adjacent(4).should.equal(z.get(4, dx - 1, dy - 1));
+          z._SOUTH._adjacentFields.length.should.equal(5) &&
+          z._SOUTH.adjacent(0).should.equal(z.get(0, dx - 1, dy - 1)) &&
+          z._SOUTH.adjacent(1).should.equal(z.get(1, dx - 1, dy - 1)) &&
+          z._SOUTH.adjacent(2).should.equal(z.get(2, dx - 1, dy - 1)) &&
+          z._SOUTH.adjacent(3).should.equal(z.get(3, dx - 1, dy - 1)) &&
+          z._SOUTH.adjacent(4).should.equal(z.get(4, dx - 1, dy - 1));
       });
 
       it('should connect one of the northern tropical pentagon’s adjacent fields.', function () {
         var northTropPent = s.get(0, 0, 0);
         return northTropPent._adjacentFields.length.should.equal(5) &&
-          northTropPent.adjacent(0).should.equal(s.get('NORTH')) &&
+          northTropPent.adjacent(0).should.equal(s._NORTH) &&
           northTropPent.adjacent(1).should.equal(s.get(4, 0, 0)) &&
           northTropPent.adjacent(2).should.equal(s.get(4, 1, 0)) &&
           northTropPent.adjacent(3).should.equal(s.get(0, 1, 0)) &&
@@ -86,14 +86,14 @@ describe('Sphere', function () {
         return southTropPent._adjacentFields.length.should.equal(5) &&
           southTropPent.adjacent(0).should.equal(s.get(0, 0, 0)) &&
           southTropPent.adjacent(1).should.equal(s.get(4, 1, 0)) &&
-          southTropPent.adjacent(2).should.equal(s.get('SOUTH')) &&
+          southTropPent.adjacent(2).should.equal(s._SOUTH) &&
           southTropPent.adjacent(3).should.equal(s.get(1, 1, 0)) &&
           southTropPent.adjacent(4).should.equal(s.get(1, 0, 0));
       });
 
       it('should connect one of the north-northeastern edge’s hexagon’s adjacent fields.', function () {
         var nNEHex = z.get(0, 0, 0);
-        return nNEHex.adjacent(0).should.equal(z.get('NORTH')) &&
+        return nNEHex.adjacent(0).should.equal(z._NORTH) &&
           nNEHex._adjacentFields.length.should.equal(6) &&
           nNEHex.adjacent(1).should.equal(z.get(4, 0, 0)) &&
           nNEHex.adjacent(2).should.equal(z.get(0, 0, 1)) &&
@@ -272,7 +272,7 @@ describe('Sphere', function () {
 
       return d.promise.should.eventually.satisfy(function () {
 
-        return s.get('NORTH').data === 1 && s.get('SOUTH').data === 1 && s.get(0, 0, 0).data === 1;
+        return s._NORTH.data === 1 && s._SOUTH.data === 1 && s.get(0, 0, 0).data === 1;
 
       });
 
@@ -302,20 +302,12 @@ describe('Sphere', function () {
             φ: π / 2 - L
           };
 
-      var d_n_f = positions.distance(north, refFirst);
-      var d_f_s = positions.distance(refFirst, refSecond);
-      var mid1  = positions.midpoint(refFirst, refSecond);
+      var d_n_f = positions.distance(north.φ, north.λ, refFirst.φ, refFirst.λ);
+      var d_f_s = positions.distance(refFirst.φ, refFirst.λ, refSecond.φ, refSecond.λ);
 
       it('should calculate distance accurately.', function () {
         return d_n_f.should.be.closeTo(L, tolerance) &&
           d_f_s.should.be.closeTo(L, tolerance);
-      });
-
-      it('should interpolate intermediate points accurately.', function () {
-        var int1 = positions.interpolate(refFirst, refSecond, 2)[0];
-
-        return int1.λ.should.be.closeTo(mid1.λ, tolerance) &&
-          int1.φ.should.be.closeTo(mid1.φ, tolerance);
       });
 
     });
@@ -328,19 +320,19 @@ describe('Sphere', function () {
 
         it('should calculate the positions for polar fields accurately.', function () {
 
-          return s.get('NORTH').position.λ.should.be.closeTo(0, tolerance) &&
-            s.get('NORTH').position.φ.should.be.closeTo(π / 2, tolerance) &&
-            s.get('SOUTH').position.λ.should.be.closeTo(0, tolerance) &&
-            s.get('SOUTH').position.φ.should.be.closeTo(π / -2, tolerance);
+          return s._NORTH.position[1].should.be.closeTo(0, tolerance) &&
+            s._NORTH.position[0].should.be.closeTo(π / 2, tolerance) &&
+            s._SOUTH.position[1].should.be.closeTo(0, tolerance) &&
+            s._SOUTH.position[0].should.be.closeTo(π / -2, tolerance);
 
         });
 
         it('should calculate the positions for tropical fields accurately.', function () {
 
-          return s.get(2, 0, 0).position.λ.should.be.closeTo(4 * π / 5, tolerance) &&
-            s.get(2, 0, 0).position.φ.should.be.closeTo(π / 2 - L, tolerance) &&
-            s.get(2, 1, 0).position.λ.should.be.closeTo(4 * π / 5 + π / 5, tolerance) &&
-            s.get(2, 1, 0).position.φ.should.be.closeTo(π / -2 + L, tolerance);
+          return s.get(2, 0, 0).position[1].should.be.closeTo(4 * π / 5, tolerance) &&
+            s.get(2, 0, 0).position[0].should.be.closeTo(π / 2 - L, tolerance) &&
+            s.get(2, 1, 0).position[1].should.be.closeTo(4 * π / 5 + π / 5, tolerance) &&
+            s.get(2, 1, 0).position[0].should.be.closeTo(π / -2 + L, tolerance);
 
         });
 
@@ -352,8 +344,8 @@ describe('Sphere', function () {
 
           it('should calculate the positions for northern polar edge fields accurately.', function () {
 
-            return z.get(2, 1, 0).position.λ.should.be.closeTo(4 * π / 5, tolerance) &&
-              z.get(2, 1, 0).position.φ.should.be.closeTo(π / 2 - L + u, tolerance);
+            return z.get(2, 1, 0).position[1].should.be.closeTo(4 * π / 5, tolerance) &&
+              z.get(2, 1, 0).position[0].should.be.closeTo(π / 2 - L + u, tolerance);
 
           });
 
@@ -395,8 +387,8 @@ describe('Sphere', function () {
 
           it('should calculate the positions for southern polar edge fields accurately.', function () {
 
-            return z.get(2, 5, 1).position.λ.should.be.closeTo(π, tolerance) &&
-              z.get(2, 5, 1).position.φ.should.be.closeTo(π / -2 + L - u, tolerance);
+            return z.get(2, 5, 1).position[1].should.be.closeTo(π, tolerance) &&
+              z.get(2, 5, 1).position[0].should.be.closeTo(π / -2 + L - u, tolerance);
 
           });
 
@@ -406,29 +398,25 @@ describe('Sphere', function () {
 
           it('should calculate the positions for north polar face fields.', function () {
 
-            return z.get(3, 0, 1).should.have.deep.property('position.λ') &&
-              z.get(3, 0, 1).position.λ.should.be.a('number');
+            return z.get(3, 0, 1).position[1].should.be.a('number');
 
           });
 
           it('should calculate the positions for west tropical face fields.', function () {
 
-            return z.get(3, 1, 2).should.have.deep.property('position.λ') &&
-              z.get(3, 1, 2).position.λ.should.be.a('number');
+            return z.get(3, 1, 2).position[1].should.be.a('number');
 
           });
 
           it('should calculate the positions for east tropical face fields.', function () {
 
-            return z.get(3, 3, 1).should.have.deep.property('position.λ') &&
-              z.get(3, 3, 1).position.λ.should.be.a('number');
+            return z.get(3, 3, 1).position[1].should.be.a('number');
 
           });
 
           it('should calculate the positions for south polar face fields.', function () {
 
-            return z.get(3, 4, 2).should.have.deep.property('position.λ') &&
-              z.get(3, 4, 2).position.λ.should.be.a('number');
+            return z.get(3, 4, 2).position[1].should.be.a('number');
 
           });
 
