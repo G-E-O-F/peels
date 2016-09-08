@@ -20,9 +20,10 @@
  * SOFTWARE.
  */
 
-var BABEL_LOADER = "babel?cacheDirectory&presets[]=es2015";
+const BABEL_LOADER = "babel?cacheDirectory&presets[]=es2015";
 
-var webpack = require('webpack');
+const webpack = require('webpack'),
+      path = require('path');
 
 module.exports = {
   target: "web",
@@ -36,7 +37,16 @@ module.exports = {
   ],
   module: {
     loaders: [
-      { test: /\.js$/, loaders: [BABEL_LOADER], exclude: /node_modules/}
+      {
+        test: /\.js$/,
+        loaders: [BABEL_LOADER],
+        include: [
+          path.resolve(__dirname, '../../node_modules/geof-util'),
+          path.resolve(__dirname, '../../lib'),
+          path.resolve(__dirname, '../../www/src'),
+          path.resolve(__dirname, '../../index.js')
+        ]
+      }
     ]
   }
 };
