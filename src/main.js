@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Will Shown. All Rights Reserved.
+ * Copyright (c) 2016 Will Shown. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,9 +20,11 @@
  * SOFTWARE.
  */
 
+'use strict';
+
 import domready from 'domready';
 import Coordinator from './sphere-coordinator';
 
 domready(function(){
-  var coordinator = new Coordinator();
+  new Coordinator();
 });
