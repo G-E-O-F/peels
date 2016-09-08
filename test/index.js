@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Will Shown. All Rights Reserved.
+ * Copyright (c) 2016 Will Shown. All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,21 +20,23 @@
  * SOFTWARE.
  */
 
-var assert         = require('assert'),
-    chai           = require('chai'),
-    chaiAsPromised = require("chai-as-promised"),
-    _              = require('lodash'),
-    q              = require('q');
+'use strict';
+
+const assert         = require('assert'),
+      chai           = require('chai'),
+      chaiAsPromised = require("chai-as-promised"),
+      _              = require('lodash'),
+      q              = require('q');
 
 chai.should();
 chai.use(chaiAsPromised);
 
 describe('Sphere', function () {
 
-  var Sphere    = require('../lib/sphere');
-  var validate  = require('../lib/sphere/validate');
-  var Field     = require('../lib/field');
-  var positions = require('../lib/sphere/positions');
+  const Sphere    = require('../lib/sphere'),
+        validate  = require('../lib/sphere/validate'),
+        Field     = require('../lib/field'),
+        positions = require('../lib/sphere/positions');
 
   // `s` is a sphere that is essentially an icosahedron, good for testing that strange case.
   var s = new Sphere({
