@@ -110,13 +110,20 @@ export const tenPanelsAndPoles = function(){
 
 };
 
-const stringLim = 64;
+export const LEDStrings = function(){
 
-// TODO: implement
+  var p = this.data.strand,
+      color = [0, 0, 0];
 
-// export const LEDStrings = function(){
-//
-// };
+  if(panelColors[p]) color = panelColors[p];
+
+  return {
+    r: color[0],
+    g: color[1],
+    b: color[2]
+  };
+
+};
 
 export const useRGB = function(){
 

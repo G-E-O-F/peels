@@ -49,6 +49,7 @@
     "dat-gui": "^0.5.0",
     "domready": "^1.0.8",
     "lodash": "latest",
+    "minimist": "^1.2.0",
     "mocha": "^2.0.1",
     "postcss": "^5.0.19",
     "postcss-calc": "^5.2.0",
