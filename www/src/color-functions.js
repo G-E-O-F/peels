@@ -60,6 +60,64 @@ export const highlightIcosahedron = function(){
 
 };
 
+const cToF = c=>c*toF;
+
+const panelColors = [
+  [85,98,112].map(cToF),
+  [78,205,196].map(cToF),
+  [199,244,100].map(cToF),
+  [255,107,107].map(cToF),
+  [196,77,88].map(cToF),
+
+  [209,242,165].map(cToF),
+  [255,159,128].map(cToF),
+  [239,250,180].map(cToF),
+  [245,105,145].map(cToF),
+  [255,196,140].map(cToF),
+
+  [103,145,122].map(cToF),
+  [184,175,3].map(cToF),
+  [227,50,88].map(cToF),
+  [204,191,130].map(cToF),
+
+  [171,82,107].map(cToF),
+  [240,226,164].map(cToF),
+  [197,206,174].map(cToF),
+  [188,162,151].map(cToF),
+];
+
+export const tenPanelsAndPoles = function(){
+
+  var d = this._parent._divisions,
+      sxy = this._sxy,
+      p;
+
+  if(this._i < 2){
+    return {
+      r: 1,
+      g: 1,
+      b: 1
+    }
+  }else{
+    p = Math.floor(sxy[1] / d) * 5 + sxy[0]
+  }
+
+  return {
+    r: panelColors[p][0],
+    g: panelColors[p][1],
+    b: panelColors[p][2]
+  }
+
+};
+
+const stringLim = 64;
+
+// TODO: implement
+
+// export const LEDStrings = function(){
+//
+// };
+
 export const useRGB = function(){
 
   return {
