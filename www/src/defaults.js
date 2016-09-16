@@ -26,6 +26,6 @@ export const divisions = 10;
 export const wireframe = false;
 export const wireframeLinewidth = 1.2;
 export const leds = 64;
-export const coloration = 'highlightIcosahedron';
+export const coloration = 'LEDStrings';
 export const useRGBAsset = 'earth.jpeg';
 export const geometryType = 'poly-per-field';
