@@ -68,6 +68,8 @@
     "async": "^0.9.0",
     "babel-cli": "^6.16.0",
     "geof-util": "g-e-o-f/util",
+    "pex-geom": "^1.0.0-beta.2",
+    "pex-math": "^1.0.1",
     "point-in-polygon": "^1.0.0"
   },
   "engines": {
