@@ -71,6 +71,12 @@ class Coordinator {
       .step(1)
       .onChange(this._onGeometryChange.bind(this));
 
+    this._gui.add(this, 'leds')
+      .min(4)
+      .max(64)
+      .step(1)
+      .onChange(this._onGeometryChange.bind(this));
+
     this._gui.add(this, 'geometryType', [
       'poly-per-field',
       'vertex-per-field'

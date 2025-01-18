@@ -26,6 +26,8 @@ import Sphere from '../../index.js';
 
 import * as colorFns from './color-functions';
 
+import partition from '../../lib/scad/partition';
+
 function _clamp(RGBval){
   return Math.max(Math.min(RGBval, 255), 0)
 }
@@ -38,9 +40,9 @@ onmessage = function(e){
 
   var colorFn = colorFns[opts.coloration] ? colorFns[opts.coloration] : colorFns.default;
 
-  if(opts.coloration === 'useRGB' && opts.imageData){
+  if(opts.coloration === 'useRGB' && opts.imageData) {
 
-    s.fromRaster(opts.imageData, opts.imageWidth, opts.imageHeight, 4, function(r, g, b){
+    s.fromRaster(opts.imageData, opts.imageWidth, opts.imageHeight, 4, function (r, g, b) {
 
       this.data = {
         r: _clamp(r),
@@ -48,12 +50,20 @@ onmessage = function(e){
         b: _clamp(b)
       };
 
-    }, function(){
+    }, function () {
 
-      s.toCG({ colorFn: colorFn, type: (opts.geometryType || 'fields') }, function(err, vfc){
+      s.toCG({colorFn: colorFn, type: (opts.geometryType || 'fields')}, function (err, vfc) {
         postMessage(vfc);
       });
 
+    });
+
+  }else if( opts.coloration === 'LEDStrings' ){
+
+    partition(s, opts.leds);
+
+    s.toCG({colorFn: colorFn, type: (opts.geometryType || 'fields')}, function (err, vfc) {
+      postMessage(vfc);
     });
 
   }else{
